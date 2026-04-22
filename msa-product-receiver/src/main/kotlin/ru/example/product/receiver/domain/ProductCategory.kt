@@ -1,0 +1,12 @@
+package ru.example.product.receiver.domain
+
+/**
+ * Product category enumeration.
+ * Matches the categories specified in TASK-01.
+ */
+enum class ProductCategory {
+    ELECTRONICS,
+    CLOTHING,
+    FOOD,
+    HOME_GOODS
+}

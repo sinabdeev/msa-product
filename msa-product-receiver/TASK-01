@@ -1,0 +1,31 @@
+DTO (Data Transfer Object)
+
+Product DTO (для API)
+
+
+
+data class ProductDto(
+    val id: UUID?,                          // Уникальный идентификатор
+    val sku: String,                        // Артикул (String)
+    val name: String,                       // Название товара
+    val description: String,               // Описание ( String)
+    val price: BigDecimal,                  // Цена (всегда BigDecimal для денег!)
+    val quantity: Int,                      // Количество на складе (Int)
+    val weight: Double?,                    // Вес (Double)
+    val isAvailable: Boolean,               // Флаг наличия (Boolean)
+    val category: ProductCategory,          // Enum (категория)
+    val tags: List<String>,                 // Коллекция (List)
+    val createdAt: Instant?                 // Время создания (момент времени)
+    val updatedAt: Instant?                 // Время обновления (момент времени)
+)
+
+enum class ProductCategory {
+    ELECTRONICS, CLOTHING, FOOD, HOME_GOODS
+}
+
+Реализовать методы для создания, обновления, удаления товара через REST API.
+
+Сформировать yml файл в формате openapi.
+
+Добавить swagger аннотации для документирования API.
+Добавить сам swagger.
