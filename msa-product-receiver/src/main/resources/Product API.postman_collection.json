@@ -1,0 +1,598 @@
+{
+	"info": {
+		"_postman_id": "8c00e24d-040f-4480-8b7f-fc6dee9451f7",
+		"name": "Product API",
+		"description": "Product management API for msa-product-receiver\n\nContact Support:\n Name: Product Team\n Email: product@example.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/v1/products",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Get product by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<uuid>",
+											"description": "(Required) Product ID"
+										}
+									]
+								},
+								"description": "Retrieve a product by its unique identifier"
+							},
+							"response": [
+								{
+									"name": "Product found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+								},
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Update product",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"weight\": \"<double>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<uuid>",
+											"description": "(Required) Product ID"
+										}
+									]
+								},
+								"description": "Update an existing product"
+							},
+							"response": [
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"weight\": \"<double>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Product with same SKU already exists",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"weight\": \"<double>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Conflict",
+									"code": 409,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Product updated successfully",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"weight\": \"<double>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+								},
+								{
+									"name": "Invalid input",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"weight\": \"<double>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Delete product",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<uuid>",
+											"description": "(Required) Product ID"
+										}
+									]
+								},
+								"description": "Delete a product by its ID"
+							},
+							"response": [
+								{
+									"name": "Product deleted successfully",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/products/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"products",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Get all products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						},
+						"description": "Retrieve a list of all products"
+					},
+					"response": [
+						{
+							"name": "List of products",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": true,\n \"message\": \"dolore culpa consectetur\",\n \"data\": [\n  {\n   \"id\": \"3ae4e5ec-a908-20c7-3ba5-6b8cbd1f813e\",\n   \"sku\": \"\",\n   \"name\": \"proident laborum\",\n   \"description\": \"ea velit Excepteur\",\n   \"price\": -22938190.93024166,\n   \"quantity\": -88148348,\n   \"weight\": -11931161.290033504,\n   \"isAvailable\": false,\n   \"category\": \"ELECTRONICS\",\n   \"tags\": [\n    \"quis\",\n    \"velit elit nulla proi\"\n   ],\n   \"createdAt\": \"1961-03-08T17:06:37.301Z\",\n   \"updatedAt\": \"1972-03-16T04:56:30.501Z\"\n  },\n  {\n   \"id\": \"ec189b55-af7b-a1d3-1f6d-d59889bd5bdf\",\n   \"sku\": \"commodo eiusmod occaecat in incididunt\",\n   \"name\": \"ut incididunt tempor\",\n   \"description\": \"occaecat id magna consectetur\",\n   \"price\": 11505405.433160558,\n   \"quantity\": 93013629,\n   \"weight\": -65296219.29875966,\n   \"isAvailable\": false,\n   \"category\": \"ELECTRONICS\",\n   \"tags\": [\n    \"quis est ad\",\n    \"exercitation voluptate\"\n   ],\n   \"createdAt\": \"2008-06-30T16:50:02.895Z\",\n   \"updatedAt\": \"1956-11-10T12:26:37.003Z\"\n  }\n ],\n \"timestamp\": \"2003-11-25T22:25:45.071Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"AUD-WH-1000XM5-B\",\n    \"name\": \"Беспроводные наушники Sony WH-1000XM5 Black\",\n    \"description\": \"Полноразмерные наушники с лучшим в отрасли шумоподавлением, 30 часами работы и поддержкой Hi-Res Audio.\",\n    \"price\": 34990.00,\n    \"quantity\": 15,\n    \"isAvailable\": true,\n    \"category\": \"ELECTRONICS\",\n    \"weight\": 0.25,\n    \"tags\": [\n        \"Bluetooth\",\n        \"Шумоподавление\"\n    ]\n}\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						},
+						"description": "Create a new product with the provided data"
+					},
+					"response": [
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product with same SKU already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product created successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
