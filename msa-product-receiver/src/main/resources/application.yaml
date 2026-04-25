@@ -51,6 +51,3 @@ logging:
     org.hibernate: WARN
     # Jackson - WARN for serialization issues
     com.fasterxml.jackson: WARN
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"

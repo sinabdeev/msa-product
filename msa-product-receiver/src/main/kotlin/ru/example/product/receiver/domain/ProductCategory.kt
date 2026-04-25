@@ -8,5 +8,7 @@ enum class ProductCategory {
     ELECTRONICS,
     CLOTHING,
     FOOD,
-    HOME_GOODS
+    HOME_GOODS,
+    APPLIANCES,
+    SMART_HOME
 }

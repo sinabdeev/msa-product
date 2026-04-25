@@ -584,6 +584,264 @@
 							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
 						}
 					]
+				},
+				{
+					"name": "Create a new product Copy 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"SMART-LMP-YEE-V2\",\n    \"name\": \"Умная светодиодная лампа Yeelight Smart LED Bulb M2\",\n    \"description\": \"Многоцветная лампа с поддержкой Google Assistant и Apple HomeKit. Регулировка яркости и температуры света через приложение.\",\n    \"price\": 1290.50,\n    \"quantity\": 150,\n    \"isAvailable\": true,\n    \"category\": \"SMART_HOME\",\n    \"weight\": 0.18,\n    \"tags\": [\n        \"RGB\",\n        \"Wi-Fi\",\n        \"HomeKit\",\n        \"Умный свет\"\n    ]\n}\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						},
+						"description": "Create a new product with the provided data"
+					},
+					"response": [
+						{
+							"name": "Product with same SKU already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product created successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new product Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"KITCH-KIT-540-RED\",\n    \"name\": \"Планетарный миксер KitchenAid Artisan 4.8 л\",\n    \"description\": \"Легендарный миксер в корпусе из литого металла с 10 скоростями и уникальным планетарным вращением для идеального смешивания.\",\n    \"price\": 64990.00,\n    \"quantity\": 8,\n    \"isAvailable\": true,\n    \"category\": \"APPLIANCES\",\n    \"weight\": 11.3,\n    \"tags\": [\n        \"Кухня\",\n        \"Профессиональное оборудование\",\n        \"Красный цвет\"\n    ]\n}\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						},
+						"description": "Create a new product with the provided data"
+					},
+					"response": [
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product created successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+						},
+						{
+							"name": "Product with same SKU already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
 				}
 			]
 		}

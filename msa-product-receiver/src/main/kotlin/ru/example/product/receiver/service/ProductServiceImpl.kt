@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.example.product.receiver.domain.ProductCategory
 import ru.example.product.receiver.domain.ProductDto
 import ru.example.product.receiver.domain.ProductEntity
+import ru.example.product.receiver.domain.TagsWrapper
 import ru.example.product.receiver.dto.request.CreateProductRequest
 import ru.example.product.receiver.dto.request.UpdateProductRequest
 import ru.example.product.receiver.exception.ProductNotFoundException
@@ -39,7 +40,7 @@ class ProductServiceImpl(
             weight = request.weight,
             isAvailable = request.isAvailable,
             category = ProductCategory.valueOf(request.category.uppercase()),
-            tags = request.tags,
+            tags = TagsWrapper (request.tags),
             createdAt = Instant.now(),
             updatedAt = Instant.now()
         )
@@ -85,7 +86,7 @@ class ProductServiceImpl(
             weight = request.weight ?: existingEntity.weight,
             isAvailable = request.isAvailable ?: existingEntity.isAvailable,
             category = request.category?.let { ProductCategory.valueOf(it.uppercase()) } ?: existingEntity.category,
-            tags = request.tags ?: existingEntity.tags,
+            tags = request.tags ?.let {TagsWrapper (request.tags)} ?: existingEntity.tags,
             updatedAt = Instant.now()
         )
 
@@ -129,7 +130,7 @@ class ProductServiceImpl(
             weight = entity.weight,
             isAvailable = entity.isAvailable,
             category = entity.category,
-            tags = entity.tags,
+            tags = entity.tags.values,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt
         )

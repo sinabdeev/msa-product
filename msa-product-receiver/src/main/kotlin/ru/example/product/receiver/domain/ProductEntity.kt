@@ -6,6 +6,9 @@ import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
+import org.springframework.data.jdbc.repository.config.*
+
+
 
 /**
  * Database entity for products.
@@ -41,7 +44,7 @@ data class ProductEntity(
     val category: ProductCategory,
 
     @Column("tags")
-    val tags: List<String> = emptyList(), //TODO: Change to JSONB
+    val tags: TagsWrapper  = TagsWrapper (emptyList()), // JSONB converter handles serialization
 
     @Column("created_at")
     val createdAt: Instant? = null,
@@ -56,3 +59,6 @@ data class ProductEntity(
         return this.copy(updatedAt = updatedAt)
     }
 }
+
+
+data class TagsWrapper(val values: List<String>)
