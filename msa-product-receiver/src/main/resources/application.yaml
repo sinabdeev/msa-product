@@ -36,3 +36,21 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+
+# Logging configuration
+logging:
+  level:
+    # Application packages - DEBUG for development
+    ru.example.product.receiver: DEBUG
+    # Spring framework - WARN to reduce noise
+    org.springframework: WARN
+    org.springframework.jdbc: WARN
+    org.springframework.transaction: WARN
+    org.springframework.web: DEBUG
+    # Database - WARN for SQL errors
+    org.hibernate: WARN
+    # Jackson - WARN for serialization issues
+    com.fasterxml.jackson: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"

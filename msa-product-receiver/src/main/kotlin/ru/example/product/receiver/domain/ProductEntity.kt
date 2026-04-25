@@ -41,7 +41,7 @@ data class ProductEntity(
     val category: ProductCategory,
 
     @Column("tags")
-    val tags: List<String> = emptyList(),
+    val tags: List<String> = emptyList(), //TODO: Change to JSONB
 
     @Column("created_at")
     val createdAt: Instant? = null,

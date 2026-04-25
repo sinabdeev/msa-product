@@ -1,5 +1,7 @@
 package ru.example.product.receiver.service
 
+import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.example.product.receiver.domain.ProductCategory
@@ -16,11 +18,15 @@ import java.util.*
 class ProductServiceImpl(
     private val productRepository: ProductRepository
 ) : ProductService {
+    private val logger: Logger = LoggerFactory.getLogger(ProductServiceImpl::class.java)
 
     @Transactional
     override fun createProduct(request: CreateProductRequest): ProductDto {
+        logger.info("Creating product with SKU: {}", request.sku)
+        
         // Check if SKU already exists
         if (productRepository.existsBySku(request.sku)) {
+            logger.warn("Product with SKU '{}' already exists", request.sku)
             throw IllegalArgumentException("Product with SKU '${request.sku}' already exists")
         }
 
@@ -39,13 +45,18 @@ class ProductServiceImpl(
         )
 
         val savedEntity = productRepository.save(entity)
+        logger.info("Product created successfully with ID: {}", savedEntity.id)
         return toDto(savedEntity)
     }
 
     @Transactional(readOnly = true)
     override fun getProduct(id: UUID): ProductDto {
+        logger.debug("Getting product with ID: {}", id)
         val entity = productRepository.findById(id)
-            .orElseThrow { ProductNotFoundException(id) }
+            .orElseThrow {
+                logger.warn("Product not found with ID: {}", id)
+                ProductNotFoundException(id)
+            }
         return toDto(entity)
     }
 
@@ -57,8 +68,13 @@ class ProductServiceImpl(
 
     @Transactional
     override fun updateProduct(id: UUID, request: UpdateProductRequest): ProductDto {
+        logger.info("Updating product with ID: {}", id)
+        
         val existingEntity = productRepository.findById(id)
-            .orElseThrow { ProductNotFoundException(id) }
+            .orElseThrow {
+                logger.warn("Product not found for update with ID: {}", id)
+                ProductNotFoundException(id)
+            }
 
         val updatedEntity = existingEntity.copy(
             sku = request.sku ?: existingEntity.sku,
@@ -76,20 +92,25 @@ class ProductServiceImpl(
         // Check SKU uniqueness if changed
         if (request.sku != null && request.sku != existingEntity.sku) {
             if (productRepository.existsBySku(request.sku)) {
+                logger.warn("Product with SKU '{}' already exists during update", request.sku)
                 throw IllegalArgumentException("Product with SKU '${request.sku}' already exists")
             }
         }
 
         val savedEntity = productRepository.save(updatedEntity)
+        logger.info("Product updated successfully with ID: {}", id)
         return toDto(savedEntity)
     }
 
     @Transactional
     override fun deleteProduct(id: UUID) {
+        logger.info("Deleting product with ID: {}", id)
         if (!productRepository.existsById(id)) {
+            logger.warn("Product not found for deletion with ID: {}", id)
             throw ProductNotFoundException(id)
         }
         productRepository.deleteById(id)
+        logger.info("Product deleted successfully with ID: {}", id)
     }
 
     @Transactional(readOnly = true)

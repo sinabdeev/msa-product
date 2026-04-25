@@ -2,6 +2,8 @@ package ru.example.product.receiver.controller.exception
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
+import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -13,12 +15,14 @@ import java.time.Instant
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
+    private val logger: Logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
     @ExceptionHandler(ProductNotFoundException::class)
     fun handleProductNotFoundException(
         ex: ProductNotFoundException,
         request: HttpServletRequest
     ): ResponseEntity<ApiError> {
+        logger.warn("Product not found: {}", ex.message)
         val error = ApiError(
             status = HttpStatus.NOT_FOUND.value(),
             message = "Product not found",
@@ -34,6 +38,7 @@ class GlobalExceptionHandler {
         ex: IllegalArgumentException,
         request: HttpServletRequest
     ): ResponseEntity<ApiError> {
+        logger.warn("Invalid request: {}", ex.message)
         val error = ApiError(
             status = HttpStatus.BAD_REQUEST.value(),
             message = "Invalid request",
@@ -52,6 +57,7 @@ class GlobalExceptionHandler {
         val errors = ex.bindingResult.fieldErrors.joinToString(", ") { error ->
             "${error.field}: ${error.defaultMessage}"
         }
+        logger.warn("Validation failed: {}", errors)
         val error = ApiError(
             status = HttpStatus.BAD_REQUEST.value(),
             message = "Validation failed",
@@ -70,6 +76,7 @@ class GlobalExceptionHandler {
         val errors = ex.constraintViolations.joinToString(", ") { violation ->
             "${violation.propertyPath}: ${violation.message}"
         }
+        logger.warn("Constraint violation: {}", errors)
         val error = ApiError(
             status = HttpStatus.BAD_REQUEST.value(),
             message = "Constraint violation",
@@ -85,6 +92,7 @@ class GlobalExceptionHandler {
         ex: Exception,
         request: HttpServletRequest
     ): ResponseEntity<ApiError> {
+        logger.error("Unhandled exception: {}", ex.message, ex)
         val error = ApiError(
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             message = "Internal server error",
