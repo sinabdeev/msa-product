@@ -55,6 +55,28 @@ paths:
           description: Invalid input
         '409':
           description: Product with same SKU already exists
+  /api/v1/products/batch:
+    post:
+      tags:
+        - Products
+      summary: Create multiple products in batch
+      description: Create multiple products in a single atomic operation
+      operationId: batchCreateProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductsBatchRequest'
+      responses:
+        '201':
+          description: Products created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseListProductDto'
+        '400':
+          description: Invalid input or validation failed
   /api/v1/products/{id}:
     get:
       tags:
@@ -235,14 +257,26 @@ components:
           items:
             type: string
           description: List of tags
-    UpdateProductRequest:
-      type: object
-      properties:
-        sku:
-          type: string
-          minLength: 1
-          maxLength: 50
-          description: Stock keeping unit (article number)
+   CreateProductsBatchRequest:
+     type: object
+     required:
+       - products
+     properties:
+       products:
+         type: array
+         minItems: 1
+         maxItems: 100
+         items:
+           $ref: '#/components/schemas/CreateProductRequest'
+         description: List of products to create
+   UpdateProductRequest:
+     type: object
+     properties:
+       sku:
+         type: string
+         minLength: 1
+         maxLength: 50
+         description: Stock keeping unit (article number)
         name:
           type: string
           minLength: 1

@@ -51,6 +51,68 @@ class ProductServiceImpl(
         return toDto(savedEntity)
     }
 
+    @Transactional
+    override fun createProductsBatch(requests: List<CreateProductRequest>): List<ProductDto> {
+        logger.info("Creating batch of {} products", requests.size)
+
+        // Validate batch size
+        if (requests.size > 100) {
+            logger.warn("Batch size {} exceeds maximum limit of 100", requests.size)
+            throw IllegalArgumentException("Batch size cannot exceed 100 products")
+        }
+
+        // Check for duplicate SKUs within the batch
+        val skuSet = mutableSetOf<String>()
+        val duplicateSkus = mutableListOf<String>()
+        requests.forEach { request ->
+            if (!skuSet.add(request.sku)) {
+                duplicateSkus.add(request.sku)
+            }
+        }
+        if (duplicateSkus.isNotEmpty()) {
+            logger.warn("Duplicate SKUs found in batch: {}", duplicateSkus)
+            throw IllegalArgumentException("Duplicate SKUs in batch: ${duplicateSkus.joinToString()}")
+        }
+
+        // Check for SKU conflicts with existing products
+        val conflictingSkus = mutableListOf<String>()
+        requests.forEach { request ->
+            if (productRepository.existsBySku(request.sku)) {
+                conflictingSkus.add(request.sku)
+            }
+        }
+        if (conflictingSkus.isNotEmpty()) {
+            logger.warn("SKU conflicts with existing products: {}", conflictingSkus)
+            throw IllegalArgumentException("SKU already exists: ${conflictingSkus.joinToString()}")
+        }
+
+        // Create all entities
+        val now = Instant.now()
+        val entities =
+            requests.map { request ->
+                ProductEntity(
+                    sku = request.sku,
+                    name = request.name,
+                    description = request.description,
+                    price = request.price,
+                    quantity = request.quantity,
+                    weight = request.weight,
+                    isAvailable = request.isAvailable,
+                    category = ProductCategory.valueOf(request.category.uppercase()),
+                    tags = TagsWrapper(request.tags),
+                    createdAt = now,
+                    updatedAt = now,
+                )
+            }
+
+        // Save all entities
+        val savedEntities = productRepository.saveAll(entities)
+        logger.info("Batch created successfully with {} products", savedEntities.count())
+
+        // Convert to DTOs
+        return savedEntities.map { toDto(it) }
+    }
+
     @Transactional(readOnly = true)
     override fun getProduct(id: UUID): ProductDto {
         logger.debug("Getting product with ID: {}", id)

@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "8c00e24d-040f-4480-8b7f-fc6dee9451f7",
-		"name": "Product API",
+		"name": "Product API v1",
 		"description": "Product management API for msa-product-receiver\n\nContact Support:\n Name: Product Team\n Email: product@example.com",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -866,6 +866,396 @@
 								"api",
 								"v1",
 								"products"
+							]
+						},
+						"description": "Create a new product with the provided data"
+					},
+					"response": [
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product with same SKU already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product created successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new product Batch 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"products\": [\n    { \"sku\": \"EL-001\", \"name\": \"Smartphone X1\", \"description\": \"Flagship smartphone\", \"price\": 799.99, \"quantity\": 50, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"mobile\", \"new\"] },\n    { \"sku\": \"EL-002\", \"name\": \"Laptop Pro 16\", \"description\": \"High-performance laptop\", \"price\": 2499.00, \"quantity\": 15, \"weight\": 2.1, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"work\", \"tech\"] },\n    { \"sku\": \"EL-003\", \"name\": \"Wireless Earbuds\", \"description\": \"Noise cancelling headphones\", \"price\": 149.50, \"quantity\": 120, \"weight\": 0.05, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"audio\"] },\n    { \"sku\": \"CL-001\", \"name\": \"Cotton T-Shirt\", \"description\": \"Basic white tee\", \"price\": 19.99, \"quantity\": 200, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"basic\", \"summer\"] },\n    { \"sku\": \"CL-002\", \"name\": \"Denim Jeans\", \"description\": \"Classic blue jeans\", \"price\": 59.90, \"quantity\": 85, \"weight\": 0.6, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"denim\"] },\n    { \"sku\": \"CL-003\", \"name\": \"Winter Jacket\", \"description\": \"Warm waterproof jacket\", \"price\": 120.00, \"quantity\": 30, \"weight\": 1.2, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"winter\"] },\n    { \"sku\": \"FD-001\", \"name\": \"Organic Coffee Bean\", \"description\": \"Arabica 1kg\", \"price\": 25.00, \"quantity\": 500, \"weight\": 1.0, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"organic\", \"beverages\"] },\n    { \"sku\": \"FD-002\", \"name\": \"Dark Chocolate\", \"description\": \"85% Cocoa bar\", \"price\": 4.50, \"quantity\": 1000, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"sweets\"] },\n    { \"sku\": \"FD-003\", \"name\": \"Olive Oil Extra\", \"description\": \"Cold pressed 500ml\", \"price\": 12.99, \"quantity\": 150, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"cooking\"] },\n    { \"sku\": \"HG-001\", \"name\": \"Ceramic Vase\", \"description\": \"Handmade dekor\", \"price\": 45.00, \"quantity\": 20, \"weight\": 1.5, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"HG-002\", \"name\": \"Bedding Set\", \"description\": \"King size cotton\", \"price\": 89.00, \"quantity\": 40, \"weight\": 2.5, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"bedroom\"] },\n    { \"sku\": \"HG-003\", \"name\": \"Kitchen Knife Set\", \"description\": \"Stainless steel 5pcs\", \"price\": 65.00, \"quantity\": 60, \"weight\": 0.8, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"EL-004\", \"name\": \"Smart Watch S3\", \"description\": \"Fitness tracker\", \"price\": 199.00, \"quantity\": 75, \"weight\": 0.04, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"fitness\"] },\n    { \"sku\": \"EL-005\", \"name\": \"Tablet Air\", \"description\": \"10-inch display\", \"price\": 499.00, \"quantity\": 45, \"weight\": 0.45, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"tablet\"] },\n    { \"sku\": \"CL-004\", \"name\": \"Silk Scarf\", \"description\": \"Patterned luxury scarf\", \"price\": 35.00, \"quantity\": 100, \"weight\": 0.05, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"accessory\"] },\n    { \"sku\": \"CL-005\", \"name\": \"Leather Belt\", \"description\": \"Genuine leather black\", \"price\": 29.99, \"quantity\": 150, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"accessory\"] },\n    { \"sku\": \"FD-004\", \"name\": \"Green Tea\", \"description\": \"Sencha 20 bags\", \"price\": 6.99, \"quantity\": 300, \"weight\": 0.05, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"beverages\"] },\n    { \"sku\": \"FD-005\", \"name\": \"Honey Jar\", \"description\": \"Wildflower 500g\", \"price\": 15.00, \"quantity\": 80, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"natural\"] },\n    { \"sku\": \"HG-004\", \"name\": \"Desk Lamp\", \"description\": \"LED with USB port\", \"price\": 39.90, \"quantity\": 90, \"weight\": 0.7, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"office\"] },\n    { \"sku\": \"HG-005\", \"name\": \"Storage Box\", \"description\": \"Plastic 20L\", \"price\": 12.50, \"quantity\": 250, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"storage\"] },\n    { \"sku\": \"EL-006\", \"name\": \"Power Bank 20k\", \"description\": \"Fast charging\", \"price\": 49.00, \"quantity\": 110, \"weight\": 0.35, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"accessory\"] },\n    { \"sku\": \"CL-006\", \"name\": \"Running Shoes\", \"description\": \"Lightweight sneakers\", \"price\": 85.00, \"quantity\": 55, \"weight\": 0.8, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"sport\"] },\n    { \"sku\": \"FD-006\", \"name\": \"Pasta Fusilli\", \"description\": \"Durum wheat 500g\", \"price\": 2.49, \"quantity\": 400, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"grocery\"] },\n    { \"sku\": \"HG-006\", \"name\": \"Wall Clock\", \"description\": \"Minimalist design\", \"price\": 22.00, \"quantity\": 35, \"weight\": 0.6, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"EL-007\", \"name\": \"Monitor 27\\\"\", \"description\": \"4K IPS Panel\", \"price\": 349.99, \"quantity\": 25, \"weight\": 4.5, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"office\", \"tech\"] }\n  ]\n}\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"batch"
+							]
+						},
+						"description": "Create a new product with the provided data"
+					},
+					"response": [
+						{
+							"name": "Product created successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product with same SKU already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Create a new product Batch 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"products\": [\n    { \"sku\": \"EL-101\", \"name\": \"Mechanical Keyboard\", \"description\": \"RGB Backlit Blue Switches\", \"price\": 89.00, \"quantity\": 40, \"weight\": 1.1, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"gaming\", \"peripherals\"] },\n    { \"sku\": \"EL-102\", \"name\": \"Gaming Mouse\", \"description\": \"16000 DPI Optical Sensor\", \"price\": 55.50, \"quantity\": 100, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"gaming\"] },\n    { \"sku\": \"EL-103\", \"name\": \"Webcam 1080p\", \"description\": \"Full HD for streaming\", \"price\": 65.00, \"quantity\": 60, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"streaming\"] },\n    { \"sku\": \"EL-104\", \"name\": \"HDMI Cable 2m\", \"description\": \"High speed 4K support\", \"price\": 12.99, \"quantity\": 300, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"cables\"] },\n    { \"sku\": \"EL-105\", \"name\": \"External SSD 1TB\", \"description\": \"USB-C Portable Drive\", \"price\": 110.00, \"quantity\": 35, \"weight\": 0.08, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"storage\"] },\n    { \"sku\": \"EL-106\", \"name\": \"Bluetooth Speaker\", \"description\": \"Waterproof IPX7\", \"price\": 45.00, \"quantity\": 80, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"audio\"] },\n    { \"sku\": \"EL-107\", \"name\": \"VR Headset\", \"description\": \"Standalone VR System\", \"price\": 399.00, \"quantity\": 12, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"gaming\", \"vr\"] },\n    { \"sku\": \"EL-108\", \"name\": \"Router Wi-Fi 6\", \"description\": \"Dual-band AX3000\", \"price\": 125.00, \"quantity\": 25, \"weight\": 0.6, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"networking\"] },\n    { \"sku\": \"EL-109\", \"name\": \"Smart Plug\", \"description\": \"Home automation socket\", \"price\": 15.00, \"quantity\": 150, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"smart-home\"] },\n    { \"sku\": \"EL-110\", \"name\": \"USB Hub\", \"description\": \"7-in-1 Type-C Adapter\", \"price\": 34.00, \"quantity\": 90, \"weight\": 0.12, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"accessory\"] },\n    { \"sku\": \"CL-101\", \"name\": \"Hoodie Grey\", \"description\": \"Oversized cotton hoodie\", \"price\": 49.99, \"quantity\": 70, \"weight\": 0.7, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"streetwear\"] },\n    { \"sku\": \"CL-102\", \"name\": \"Wool Socks\", \"description\": \"Warm winter socks 3-pack\", \"price\": 15.00, \"quantity\": 250, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"winter\"] },\n    { \"sku\": \"CL-103\", \"name\": \"Leather Gloves\", \"description\": \"Genuine sheepskin\", \"price\": 40.00, \"quantity\": 45, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"accessories\"] },\n    { \"sku\": \"CL-104\", \"name\": \"Swim Shorts\", \"description\": \"Quick dry fabric\", \"price\": 22.00, \"quantity\": 110, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"summer\"] },\n    { \"sku\": \"CL-105\", \"name\": \"Polo Shirt\", \"description\": \"Slim fit pique polo\", \"price\": 35.00, \"quantity\": 85, \"weight\": 0.25, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"casual\"] },\n    { \"sku\": \"CL-106\", \"name\": \"Raincoat\", \"description\": \"Lightweight windbreaker\", \"price\": 55.00, \"quantity\": 40, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"outdoor\"] },\n    { \"sku\": \"CL-107\", \"name\": \"Baseball Cap\", \"description\": \"Adjustable cotton cap\", \"price\": 18.00, \"quantity\": 130, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"accessories\"] },\n    { \"sku\": \"CL-108\", \"name\": \"Yoga Pants\", \"description\": \"High-waist leggings\", \"price\": 28.00, \"quantity\": 95, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"sport\"] },\n    { \"sku\": \"CL-109\", \"name\": \"Silk Tie\", \"description\": \"Formal blue tie\", \"price\": 25.00, \"quantity\": 60, \"weight\": 0.05, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"formal\"] },\n    { \"sku\": \"CL-110\", \"name\": \"Beanie Hat\", \"description\": \"Knitted wool beanie\", \"price\": 12.00, \"quantity\": 200, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"winter\"] },\n    { \"sku\": \"FD-101\", \"name\": \"Almond Milk\", \"description\": \"Unsweetened 1L\", \"price\": 3.50, \"quantity\": 180, \"weight\": 1.0, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"vegan\"] },\n    { \"sku\": \"FD-102\", \"name\": \"Peanut Butter\", \"description\": \"Crunchy 500g\", \"price\": 6.00, \"quantity\": 140, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"spreads\"] },\n    { \"sku\": \"FD-103\", \"name\": \"Granola Bars\", \"description\": \"Oat and honey 6-pack\", \"price\": 4.20, \"quantity\": 220, \"weight\": 0.25, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"snacks\"] },\n    { \"sku\": \"FD-104\", \"name\": \"Basmati Rice\", \"description\": \"Long grain 2kg\", \"price\": 8.50, \"quantity\": 300, \"weight\": 2.0, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"pantry\"] },\n    { \"sku\": \"FD-105\", \"name\": \"Canned Tuna\", \"description\": \"In brine 160g\", \"price\": 2.10, \"quantity\": 400, \"weight\": 0.16, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"protein\"] },\n    { \"sku\": \"FD-106\", \"name\": \"Maple Syrup\", \"description\": \"Grade A 250ml\", \"price\": 14.00, \"quantity\": 55, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"sweetener\"] },\n    { \"sku\": \"FD-107\", \"name\": \"Black Pepper\", \"description\": \"Whole peppercorns 100g\", \"price\": 5.50, \"quantity\": 120, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"spices\"] },\n    { \"sku\": \"FD-108\", \"name\": \"Apple Juice\", \"description\": \"100% pure 1L\", \"price\": 2.80, \"quantity\": 160, \"weight\": 1.0, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"beverages\"] },\n    { \"sku\": \"FD-109\", \"name\": \"Sea Salt\", \"description\": \"Coarse 500g\", \"price\": 1.99, \"quantity\": 250, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"pantry\"] },\n    { \"sku\": \"FD-110\", \"name\": \"Walnuts\", \"description\": \"Shelled 200g\", \"price\": 7.50, \"quantity\": 90, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"nuts\"] },\n    { \"sku\": \"HG-101\", \"name\": \"Towel Set\", \"description\": \"Luxury bamboo fiber 3pcs\", \"price\": 32.00, \"quantity\": 75, \"weight\": 1.2, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"bathroom\"] },\n    { \"sku\": \"HG-102\", \"name\": \"Scented Candle\", \"description\": \"Lavender & Vanilla\", \"price\": 14.50, \"quantity\": 110, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"HG-103\", \"name\": \"Picture Frame\", \"description\": \"A4 Wooden frame\", \"price\": 10.00, \"quantity\": 180, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"HG-104\", \"name\": \"Water Bottle\", \"description\": \"Vacuum insulated 750ml\", \"price\": 24.00, \"quantity\": 130, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"HG-105\", \"name\": \"Hangers 10-pack\", \"description\": \"Non-slip velvet\", \"price\": 12.00, \"quantity\": 300, \"weight\": 0.8, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"closet\"] },\n    { \"sku\": \"HG-106\", \"name\": \"Door Mat\", \"description\": \"Welcome coconut fiber\", \"price\": 19.00, \"quantity\": 50, \"weight\": 1.5, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"entryway\"] },\n    { \"sku\": \"HG-107\", \"name\": \"Ironing Board\", \"description\": \"Foldable compact\", \"price\": 45.00, \"quantity\": 25, \"weight\": 3.5, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"laundry\"] },\n    { \"sku\": \"HG-108\", \"name\": \"Cushion Cover\", \"description\": \"Boho style 45x45\", \"price\": 9.99, \"quantity\": 140, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"HG-109\", \"name\": \"Flashlight LED\", \"description\": \"High lumen rechargeable\", \"price\": 29.00, \"quantity\": 80, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"utility\"] },\n    { \"sku\": \"HG-110\", \"name\": \"Laundry Basket\", \"description\": \"Woven seagrass\", \"price\": 38.00, \"quantity\": 40, \"weight\": 1.2, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"laundry\"] },\n    { \"sku\": \"EL-111\", \"name\": \"Microphone Arm\", \"description\": \"Desk mount boom arm\", \"price\": 39.00, \"quantity\": 50, \"weight\": 1.4, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"streaming\"] },\n    { \"sku\": \"CL-111\", \"name\": \"Sports Bra\", \"description\": \"Medium support\", \"price\": 26.00, \"quantity\": 100, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"sport\"] },\n    { \"sku\": \"FD-111\", \"name\": \"Lentils Red\", \"description\": \"Organic 1kg\", \"price\": 3.90, \"quantity\": 200, \"weight\": 1.0, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"pantry\"] },\n    { \"sku\": \"HG-111\", \"name\": \"Soap Dispenser\", \"description\": \"Matte black ceramic\", \"price\": 16.00, \"quantity\": 90, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"bathroom\"] },\n    { \"sku\": \"EL-112\", \"name\": \"Monitor Stand\", \"description\": \"Dual arm gas spring\", \"price\": 75.00, \"quantity\": 30, \"weight\": 4.0, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"office\"] },\n    { \"sku\": \"CL-112\", \"name\": \"Cargo Pants\", \"description\": \"Multi-pocket tactical\", \"price\": 58.00, \"quantity\": 65, \"weight\": 0.65, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"outdoor\"] },\n    { \"sku\": \"FD-112\", \"name\": \"Spaghetti No.5\", \"description\": \"500g Italian pasta\", \"price\": 1.50, \"quantity\": 500, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"grocery\"] },\n    { \"sku\": \"HG-112\", \"name\": \"Electric Kettle\", \"description\": \"Stainless steel 1.7L\", \"price\": 42.00, \"quantity\": 45, \"weight\": 1.1, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"EL-113\", \"name\": \"Drawing Tablet\", \"description\": \"8192 levels pressure\", \"price\": 150.00, \"quantity\": 20, \"weight\": 0.8, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"design\"] },\n    { \"sku\": \"HG-113\", \"name\": \"Air Purifier\", \"description\": \"HEPA filter for room\", \"price\": 129.00, \"quantity\": 15, \"weight\": 3.2, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"appliances\"] }\n  ]\n}\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"batch"
+							]
+						},
+						"description": "Create a new product with the provided data"
+					},
+					"response": [
+						{
+							"name": "Product created successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"success\": false,\n \"message\": \"nisi enim commodo\",\n \"data\": {\n  \"id\": \"a49bec98-1817-c3c4-664d-a81da750f089\",\n  \"sku\": \"occaecat non officia et id\",\n  \"name\": \"aliquip amet\",\n  \"description\": \"ullamco ipsum tempor\",\n  \"price\": -61214424.0393055,\n  \"quantity\": 91413189,\n  \"weight\": -50309747.97793535,\n  \"isAvailable\": true,\n  \"category\": \"FOOD\",\n  \"tags\": [\n   \"officia labore mollit esse\",\n   \"minim ut nostrud ess\"\n  ],\n  \"createdAt\": \"1967-08-23T07:28:30.121Z\",\n  \"updatedAt\": \"2002-07-04T06:11:41.348Z\"\n },\n \"timestamp\": \"2021-03-30T02:20:46.015Z\"\n}"
+						},
+						{
+							"name": "Invalid input",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Product with same SKU already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"price\": \"<decimal>\",\n    \"quantity\": \"<integer>\",\n    \"isAvailable\": \"<boolean>\",\n    \"category\": \"<string>\",\n    \"weight\": \"<double>\",\n    \"tags\": [\n        \"<string>\",\n        \"<string>\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Create a new product Batch 3",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"products\": [\n    { \"sku\": \"EL-201\", \"name\": \"4K Projector\", \"description\": \"Home cinema projector\", \"price\": 1200.00, \"quantity\": 10, \"weight\": 5.5, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"cinema\", \"home\"] },\n    { \"sku\": \"EL-202\", \"name\": \"Graphing Calculator\", \"description\": \"For advanced math\", \"price\": 95.00, \"quantity\": 40, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"education\"] },\n    { \"sku\": \"EL-203\", \"name\": \"Noise-Cancelling Mic\", \"description\": \"USB Studio Microphone\", \"price\": 130.00, \"quantity\": 25, \"weight\": 0.9, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"audio\", \"streaming\"] },\n    { \"sku\": \"EL-204\", \"name\": \"E-Reader Paperwhite\", \"description\": \"6-inch glare-free display\", \"price\": 140.00, \"quantity\": 60, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"books\"] },\n    { \"sku\": \"EL-205\", \"name\": \"Graphics Card RTX\", \"description\": \"8GB GDDR6 Memory\", \"price\": 499.00, \"quantity\": 5, \"weight\": 1.2, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"gaming\", \"pc\"] },\n    { \"sku\": \"EL-206\", \"name\": \"Smart Doorbell\", \"description\": \"HD Video with Wi-Fi\", \"price\": 180.00, \"quantity\": 30, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"security\"] },\n    { \"sku\": \"EL-207\", \"name\": \"Electric Scooter\", \"description\": \"25km/h max speed\", \"price\": 550.00, \"quantity\": 15, \"weight\": 12.5, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"transport\"] },\n    { \"sku\": \"EL-208\", \"name\": \"Car Dash Cam\", \"description\": \"Wide angle 1440p\", \"price\": 85.00, \"quantity\": 50, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"car\"] },\n    { \"sku\": \"EL-209\", \"name\": \"Fitness Tracker HR\", \"description\": \"Heart rate monitor band\", \"price\": 45.00, \"quantity\": 120, \"weight\": 0.03, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"fitness\"] },\n    { \"sku\": \"EL-210\", \"name\": \"Portable SSD 2TB\", \"description\": \"Rugged external drive\", \"price\": 210.00, \"quantity\": 20, \"weight\": 0.1, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"storage\"] },\n    { \"sku\": \"CL-201\", \"name\": \"Trench Coat\", \"description\": \"Classic beige coat\", \"price\": 150.00, \"quantity\": 25, \"weight\": 1.1, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"fashion\"] },\n    { \"sku\": \"CL-202\", \"name\": \"Sweatpants Blue\", \"description\": \"Cotton fleece joggers\", \"price\": 35.00, \"quantity\": 90, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"casual\"] },\n    { \"sku\": \"CL-203\", \"name\": \"Sun Hat\", \"description\": \"Wide brim straw hat\", \"price\": 24.00, \"quantity\": 55, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"summer\"] },\n    { \"sku\": \"CL-204\", \"name\": \"Leather Boots\", \"description\": \"Waterproof hiking boots\", \"price\": 135.00, \"quantity\": 30, \"weight\": 1.4, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"outdoor\"] },\n    { \"sku\": \"CL-205\", \"name\": \"Evening Dress\", \"description\": \"Black silk cocktail dress\", \"price\": 89.00, \"quantity\": 20, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"formal\"] },\n    { \"sku\": \"CL-206\", \"name\": \"Denim Jacket\", \"description\": \"Vintage wash denim\", \"price\": 65.00, \"quantity\": 45, \"weight\": 0.8, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"casual\"] },\n    { \"sku\": \"CL-207\", \"name\": \"Wool Sweater\", \"description\": \"Merino wool knit\", \"price\": 75.00, \"quantity\": 40, \"weight\": 0.6, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"winter\"] },\n    { \"sku\": \"CL-208\", \"name\": \"Ankle Socks 5pk\", \"description\": \"Cotton blend white\", \"price\": 12.00, \"quantity\": 200, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"basics\"] },\n    { \"sku\": \"CL-209\", \"name\": \"Bikini Set\", \"description\": \"Floral print 2pc\", \"price\": 29.99, \"quantity\": 70, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"summer\"] },\n    { \"sku\": \"CL-210\", \"name\": \"Suit Trousers\", \"description\": \"Slim fit grey wool\", \"price\": 55.00, \"quantity\": 35, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"formal\"] },\n    { \"sku\": \"FD-201\", \"name\": \"Matcha Powder\", \"description\": \"Ceremonial grade 30g\", \"price\": 28.00, \"quantity\": 100, \"weight\": 0.03, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"tea\", \"japanese\"] },\n    { \"sku\": \"FD-202\", \"name\": \"Coconut Water\", \"description\": \"Pure organic 500ml\", \"price\": 3.20, \"quantity\": 150, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"beverages\"] },\n    { \"sku\": \"FD-203\", \"name\": \"Quinoa 1kg\", \"description\": \"White organic quinoa\", \"price\": 9.00, \"quantity\": 180, \"weight\": 1.0, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"healthy\"] },\n    { \"sku\": \"FD-204\", \"name\": \"Balsamic Glaze\", \"description\": \"Modena IGP 250ml\", \"price\": 7.50, \"quantity\": 80, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"pantry\"] },\n    { \"sku\": \"FD-205\", \"name\": \"Pistachios\", \"description\": \"Roasted & salted 200g\", \"price\": 8.99, \"quantity\": 120, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"snacks\"] },\n    { \"sku\": \"FD-206\", \"name\": \"Honey Mustard\", \"description\": \"Sweet & spicy 200ml\", \"price\": 4.50, \"quantity\": 90, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"sauce\"] },\n    { \"sku\": \"FD-207\", \"name\": \"Linden Honey\", \"description\": \"Natural honey 400g\", \"price\": 12.00, \"quantity\": 60, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"natural\"] },\n    { \"sku\": \"FD-208\", \"name\": \"Rye Bread\", \"description\": \"Whole grain sliced\", \"price\": 3.50, \"quantity\": 40, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"bakery\"] },\n    { \"sku\": \"FD-209\", \"name\": \"Avocado Oil\", \"description\": \"Cold pressed 250ml\", \"price\": 15.00, \"quantity\": 45, \"weight\": 0.25, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"cooking\"] },\n    { \"sku\": \"FD-210\", \"name\": \"Dried Mango\", \"description\": \"No added sugar 150g\", \"price\": 6.50, \"quantity\": 110, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"snacks\"] },\n    { \"sku\": \"HG-201\", \"name\": \"Throw Blanket\", \"description\": \"Soft fleece 150x200\", \"price\": 45.00, \"quantity\": 40, \"weight\": 1.2, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"living-room\"] },\n    { \"sku\": \"HG-202\", \"name\": \"Wall Mirror\", \"description\": \"Round gold frame 60cm\", \"price\": 75.00, \"quantity\": 15, \"weight\": 3.0, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"HG-203\", \"name\": \"Table Lamp\", \"description\": \"Mid-century modern\", \"price\": 55.00, \"quantity\": 25, \"weight\": 1.5, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"lighting\"] },\n    { \"sku\": \"HG-204\", \"name\": \"Bath Mat\", \"description\": \"Memory foam grey\", \"price\": 18.00, \"quantity\": 60, \"weight\": 0.6, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"bathroom\"] },\n    { \"sku\": \"HG-205\", \"name\": \"Coffee Grinder\", \"description\": \"Manual ceramic burr\", \"price\": 28.00, \"quantity\": 45, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"HG-206\", \"name\": \"Yoga Mat\", \"description\": \"Eco-friendly TPE 6mm\", \"price\": 32.00, \"quantity\": 80, \"weight\": 0.9, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"sport\"] },\n    { \"sku\": \"HG-207\", \"name\": \"Wine Glasses 4pk\", \"description\": \"Crystal clear 450ml\", \"price\": 42.00, \"quantity\": 35, \"weight\": 1.0, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"HG-208\", \"name\": \"Bookshelf\", \"description\": \"5-tier industrial wood\", \"price\": 110.00, \"quantity\": 10, \"weight\": 15.0, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"furniture\"] },\n    { \"sku\": \"HG-209\", \"name\": \"Incense Holder\", \"description\": \"Ceramic leaf design\", \"price\": 12.00, \"quantity\": 100, \"weight\": 0.2, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"decor\"] },\n    { \"sku\": \"HG-210\", \"name\": \"Storage Jars 3pk\", \"description\": \"Glass with bamboo lids\", \"price\": 22.00, \"quantity\": 55, \"weight\": 1.1, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"EL-211\", \"name\": \"Tablet Stylus\", \"description\": \"Active pen for touchscreens\", \"price\": 45.00, \"quantity\": 85, \"weight\": 0.05, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"accessory\"] },\n    { \"sku\": \"CL-211\", \"name\": \"Cardigan Black\", \"description\": \"Button up knit\", \"price\": 48.00, \"quantity\": 50, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"casual\"] },\n    { \"sku\": \"FD-211\", \"name\": \"Pasta Penne\", \"description\": \"Whole wheat 500g\", \"price\": 2.10, \"quantity\": 300, \"weight\": 0.5, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"grocery\"] },\n    { \"sku\": \"HG-211\", \"name\": \"Shower Curtain\", \"description\": \"Waffle weave white\", \"price\": 25.00, \"quantity\": 40, \"weight\": 0.7, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"bathroom\"] },\n    { \"sku\": \"EL-212\", \"name\": \"Wall Mount TV\", \"description\": \"Tilt for 32-70 inch\", \"price\": 38.00, \"quantity\": 60, \"weight\": 2.5, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"accessory\"] },\n    { \"sku\": \"CL-212\", \"name\": \"Walking Shorts\", \"description\": \"Chino style navy\", \"price\": 32.00, \"quantity\": 75, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"CLOTHING\", \"tags\": [\"casual\"] },\n    { \"sku\": \"FD-212\", \"name\": \"Hot Sauce\", \"description\": \"Extra habanero 150ml\", \"price\": 6.00, \"quantity\": 120, \"weight\": 0.15, \"isAvailable\": true, \"category\": \"FOOD\", \"tags\": [\"sauce\"] },\n    { \"sku\": \"HG-212\", \"name\": \"Toaster 2-Slice\", \"description\": \"Stainless steel retro\", \"price\": 35.00, \"quantity\": 40, \"weight\": 1.4, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"kitchen\"] },\n    { \"sku\": \"EL-213\", \"name\": \"Power Strip\", \"description\": \"6 outlets 3 USB\", \"price\": 29.00, \"quantity\": 100, \"weight\": 0.4, \"isAvailable\": true, \"category\": \"ELECTRONICS\", \"tags\": [\"power\"] },\n    { \"sku\": \"HG-213\", \"name\": \"Desk Organizer\", \"description\": \"Mesh metal black\", \"price\": 15.00, \"quantity\": 110, \"weight\": 0.3, \"isAvailable\": true, \"category\": \"HOME_GOODS\", \"tags\": [\"office\"] }\n  ]\n}\n"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/products/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"batch"
 							]
 						},
 						"description": "Create a new product with the provided data"

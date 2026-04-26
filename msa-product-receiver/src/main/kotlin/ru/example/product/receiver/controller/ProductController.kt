@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.example.product.receiver.domain.ProductDto
 import ru.example.product.receiver.dto.request.CreateProductRequest
+import ru.example.product.receiver.dto.request.CreateProductsBatchRequest
 import ru.example.product.receiver.dto.request.UpdateProductRequest
 import ru.example.product.receiver.dto.response.ApiResponse
 import ru.example.product.receiver.service.ProductService
@@ -45,6 +46,29 @@ class ProductController(
     ): ResponseEntity<ApiResponse<ProductDto>> {
         val product = productService.createProduct(request)
         val response = ApiResponse.success("Product created successfully", product)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+    }
+
+    @Operation(summary = "Create multiple products in batch")
+    @ApiResponses(
+        SwaggerApiResponse(
+            responseCode = "201",
+            description = "Products created successfully",
+            content = [
+                Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ApiResponse::class),
+                ),
+            ],
+        ),
+        SwaggerApiResponse(responseCode = "400", description = "Invalid input or validation failed"),
+    )
+    @PostMapping("/batch")
+    fun batchCreateProducts(
+        @Valid @RequestBody request: CreateProductsBatchRequest,
+    ): ResponseEntity<ApiResponse<List<ProductDto>>> {
+        val products = productService.createProductsBatch(request.products)
+        val response = ApiResponse.success("Products created successfully", products)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 

@@ -17,6 +17,14 @@ interface ProductService {
     fun createProduct(request: CreateProductRequest): ProductDto
 
     /**
+     * Create multiple products in a batch.
+     * @param requests List of create product requests
+     * @return List of created product DTOs
+     * @throws IllegalArgumentException if any validation fails or SKU conflicts exist
+     */
+    fun createProductsBatch(requests: List<CreateProductRequest>): List<ProductDto>
+
+    /**
      * Get product by ID.
      * @param id Product ID
      * @return Product DTO
