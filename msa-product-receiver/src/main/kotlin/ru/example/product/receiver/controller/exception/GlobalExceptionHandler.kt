@@ -2,8 +2,8 @@ package ru.example.product.receiver.controller.exception
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
-import org.slf4j.LoggerFactory
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -20,86 +20,93 @@ class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException::class)
     fun handleProductNotFoundException(
         ex: ProductNotFoundException,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ResponseEntity<ApiError> {
         logger.warn("Product not found: {}", ex.message)
-        val error = ApiError(
-            status = HttpStatus.NOT_FOUND.value(),
-            message = "Product not found",
-            details = ex.message,
-            timestamp = Instant.now(),
-            path = request.requestURI
-        )
+        val error =
+            ApiError(
+                status = HttpStatus.NOT_FOUND.value(),
+                message = "Product not found",
+                details = ex.message,
+                timestamp = Instant.now(),
+                path = request.requestURI,
+            )
         return ResponseEntity(error, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(
         ex: IllegalArgumentException,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ResponseEntity<ApiError> {
         logger.warn("Invalid request: {}", ex.message)
-        val error = ApiError(
-            status = HttpStatus.BAD_REQUEST.value(),
-            message = "Invalid request",
-            details = ex.message,
-            timestamp = Instant.now(),
-            path = request.requestURI
-        )
+        val error =
+            ApiError(
+                status = HttpStatus.BAD_REQUEST.value(),
+                message = "Invalid request",
+                details = ex.message,
+                timestamp = Instant.now(),
+                path = request.requestURI,
+            )
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(
         ex: MethodArgumentNotValidException,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ResponseEntity<ApiError> {
-        val errors = ex.bindingResult.fieldErrors.joinToString(", ") { error ->
-            "${error.field}: ${error.defaultMessage}"
-        }
+        val errors =
+            ex.bindingResult.fieldErrors.joinToString(", ") { error ->
+                "${error.field}: ${error.defaultMessage}"
+            }
         logger.warn("Validation failed: {}", errors)
-        val error = ApiError(
-            status = HttpStatus.BAD_REQUEST.value(),
-            message = "Validation failed",
-            details = errors,
-            timestamp = Instant.now(),
-            path = request.requestURI
-        )
+        val error =
+            ApiError(
+                status = HttpStatus.BAD_REQUEST.value(),
+                message = "Validation failed",
+                details = errors,
+                timestamp = Instant.now(),
+                path = request.requestURI,
+            )
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleConstraintViolationException(
         ex: ConstraintViolationException,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ResponseEntity<ApiError> {
-        val errors = ex.constraintViolations.joinToString(", ") { violation ->
-            "${violation.propertyPath}: ${violation.message}"
-        }
+        val errors =
+            ex.constraintViolations.joinToString(", ") { violation ->
+                "${violation.propertyPath}: ${violation.message}"
+            }
         logger.warn("Constraint violation: {}", errors)
-        val error = ApiError(
-            status = HttpStatus.BAD_REQUEST.value(),
-            message = "Constraint violation",
-            details = errors,
-            timestamp = Instant.now(),
-            path = request.requestURI
-        )
+        val error =
+            ApiError(
+                status = HttpStatus.BAD_REQUEST.value(),
+                message = "Constraint violation",
+                details = errors,
+                timestamp = Instant.now(),
+                path = request.requestURI,
+            )
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(
         ex: Exception,
-        request: HttpServletRequest
+        request: HttpServletRequest,
     ): ResponseEntity<ApiError> {
         logger.error("Unhandled exception: {}", ex.message, ex)
-        val error = ApiError(
-            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            message = "Internal server error",
-            details = ex.message,
-            timestamp = Instant.now(),
-            path = request.requestURI
-        )
+        val error =
+            ApiError(
+                status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                message = "Internal server error",
+                details = ex.message,
+                timestamp = Instant.now(),
+                path = request.requestURI,
+            )
         return ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }

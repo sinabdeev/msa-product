@@ -12,10 +12,11 @@ import ru.example.product.receiver.domain.TagsWrapper
 @WritingConverter
 @Component
 class TagsWritingConverter(private val objectMapper: ObjectMapper) : Converter<TagsWrapper, PGobject> {
-    override fun convert(source: TagsWrapper): PGobject = PGobject().apply {
-        type = "jsonb"
-        value = objectMapper.writeValueAsString(source.values)
-    }
+    override fun convert(source: TagsWrapper): PGobject =
+        PGobject().apply {
+            type = "jsonb"
+            value = objectMapper.writeValueAsString(source.values)
+        }
 }
 
 @ReadingConverter

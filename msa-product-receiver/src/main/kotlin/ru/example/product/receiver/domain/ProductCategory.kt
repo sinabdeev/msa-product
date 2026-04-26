@@ -10,5 +10,5 @@ enum class ProductCategory {
     FOOD,
     HOME_GOODS,
     APPLIANCES,
-    SMART_HOME
+    SMART_HOME,
 }

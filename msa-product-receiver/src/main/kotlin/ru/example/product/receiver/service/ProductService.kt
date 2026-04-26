@@ -37,7 +37,10 @@ interface ProductService {
      * @return Updated product DTO
      * @throws ru.example.product.receiver.exception.ProductNotFoundException if product not found
      */
-    fun updateProduct(id: UUID, request: UpdateProductRequest): ProductDto
+    fun updateProduct(
+        id: UUID,
+        request: UpdateProductRequest,
+    ): ProductDto
 
     /**
      * Delete a product.

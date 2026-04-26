@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class OpenApiConfig {
-
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
             .info(
                 Info()
                     .title("Product API")
-                    .description("""
+                    .description(
+                        """
                         Product management API for msa-product-receiver.
                         
                         This API provides CRUD operations for products with the following features:
@@ -38,18 +38,19 @@ class OpenApiConfig {
                         - **tags**: List of tags
                         - **createdAt**: Creation timestamp
                         - **updatedAt**: Last update timestamp
-                    """.trimIndent())
+                        """.trimIndent(),
+                    )
                     .version("v1.0.0")
                     .contact(
                         Contact()
                             .name("Product Team")
-                            .email("product@example.com")
+                            .email("product@example.com"),
                     )
                     .license(
                         License()
                             .name("Apache 2.0")
-                            .url("https://www.apache.org/licenses/LICENSE-2.0.html")
-                    )
+                            .url("https://www.apache.org/licenses/LICENSE-2.0.html"),
+                    ),
             )
             .servers(
                 listOf(
@@ -58,8 +59,8 @@ class OpenApiConfig {
                         .description("Local development server"),
                     Server()
                         .url("https://api.example.com")
-                        .description("Production server")
-                )
+                        .description("Production server"),
+                ),
             )
     }
 }

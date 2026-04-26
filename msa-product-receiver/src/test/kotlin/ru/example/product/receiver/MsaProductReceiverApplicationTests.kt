@@ -9,9 +9,7 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 @Disabled("Database configuration issues in test environment")
 class MsaProductReceiverApplicationTests {
-
-	@Test
-	fun contextLoads() {
-	}
-
+    @Test
+    fun contextLoads() {
+    }
 }

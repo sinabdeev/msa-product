@@ -11,21 +11,21 @@ import java.time.Instant
 data class ApiResponse<T>(
     @Schema(description = "Indicates if the request was successful", example = "true")
     val success: Boolean,
-
     @Schema(description = "Response message", example = "Operation completed successfully")
     val message: String,
-
     @Schema(description = "Response data payload")
     val data: T? = null,
-
     @Schema(description = "Timestamp of the response", example = "2023-01-01T12:00:00Z")
-    val timestamp: Instant = Instant.now()
+    val timestamp: Instant = Instant.now(),
 ) {
     companion object {
         /**
          * Creates a successful response with data.
          */
-        fun <T> success(message: String, data: T? = null): ApiResponse<T> {
+        fun <T> success(
+            message: String,
+            data: T? = null,
+        ): ApiResponse<T> {
             return ApiResponse(success = true, message = message, data = data)
         }
 
@@ -39,7 +39,10 @@ data class ApiResponse<T>(
         /**
          * Creates an error response.
          */
-        fun <T> error(message: String, data: T? = null): ApiResponse<T> {
+        fun <T> error(
+            message: String,
+            data: T? = null,
+        ): ApiResponse<T> {
             return ApiResponse(success = false, message = message, data = data)
         }
     }

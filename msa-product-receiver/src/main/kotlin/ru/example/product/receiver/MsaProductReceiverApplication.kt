@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class MsaProductReceiverApplication
 
 fun main(args: Array<String>) {
-	runApplication<MsaProductReceiverApplication>(*args)
+    runApplication<MsaProductReceiverApplication>(*args)
 }
