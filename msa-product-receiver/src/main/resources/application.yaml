@@ -51,3 +51,14 @@ logging:
     org.hibernate: WARN
     # Jackson - WARN for serialization issues
     com.fasterxml.jackson: WARN
+
+# Product batch processing configuration
+product:
+  batch:
+    thread-pool:
+      core-size: 4
+      max-size: 4
+      queue-capacity: 256
+      keep-alive-seconds: 60
+      thread-name-prefix: "product-save-"
+      allow-core-thread-timeout: true

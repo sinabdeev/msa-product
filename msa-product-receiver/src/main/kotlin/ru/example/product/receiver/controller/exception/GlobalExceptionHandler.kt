@@ -51,6 +51,23 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleIllegalStateException(
+        ex: IllegalStateException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ApiError> {
+        logger.error("Batch processing error: {}", ex.message)
+        val error =
+            ApiError(
+                status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                message = "Batch processing error",
+                details = ex.message,
+                timestamp = Instant.now(),
+                path = request.requestURI,
+            )
+        return ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(
         ex: MethodArgumentNotValidException,

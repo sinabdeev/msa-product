@@ -17,10 +17,16 @@ interface ProductService {
     fun createProduct(request: CreateProductRequest): ProductDto
 
     /**
-     * Create multiple products in a batch.
+     * Create multiple products in a batch (parallel execution).
+     * Products are saved in parallel using a thread pool configured in ThreadPoolConfig.
+     * Each product is saved independently without transaction boundaries.
+     *
+     * Note: This method does not use transactions (Propagation.NOT_SUPPORTED).
+     *
      * @param requests List of create product requests
      * @return List of created product DTOs
      * @throws IllegalArgumentException if any validation fails or SKU conflicts exist
+     * @throws IllegalStateException if any product fails to save during parallel execution
      */
     fun createProductsBatch(requests: List<CreateProductRequest>): List<ProductDto>
 
