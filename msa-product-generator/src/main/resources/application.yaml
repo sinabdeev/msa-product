@@ -1,0 +1,64 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+    default-schema: product
+  application:
+    name: msa-product-generator
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+# SpringDoc OpenAPI configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+# Server configuration
+server:
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Logging configuration
+logging:
+  level:
+    # Application packages - DEBUG for development
+    ru.example.product.generator: DEBUG
+    # Spring framework - WARN to reduce noise
+    org.springframework: WARN
+    org.springframework.jdbc: WARN
+    org.springframework.transaction: WARN
+    org.springframework.web: DEBUG
+    # Database - WARN for SQL errors
+    org.hibernate: WARN
+    # Jackson - WARN for serialization issues
+    com.fasterxml.jackson: WARN
+
+# Product batch processing configuration
+product:
+  batch:
+    thread-pool:
+      core-size: 4
+      max-size: 4
+      queue-capacity: 256
+      keep-alive-seconds: 60
+      thread-name-prefix: "product-save-"
+      allow-core-thread-timeout: true
