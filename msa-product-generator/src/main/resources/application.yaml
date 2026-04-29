@@ -62,3 +62,12 @@ product:
       keep-alive-seconds: 60
       thread-name-prefix: "product-save-"
       allow-core-thread-timeout: true
+
+  # Product generator scheduler configuration
+  generator:
+    thread-pool:
+      core-size: 2
+      max-size: 2
+      queue-capacity: 10
+      keep-alive-seconds: 60
+      thread-name-prefix: "product-gen-"
