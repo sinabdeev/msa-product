@@ -1,13 +1,4 @@
 spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-    enabled: true
-    default-schema: product
   application:
     name: msa-product-generator
   jackson:
@@ -31,6 +22,7 @@ springdoc:
 
 # Server configuration
 server:
+  port: 8081 # Changed from default 8080 to 8081
   servlet:
     context-path: /
   error:
