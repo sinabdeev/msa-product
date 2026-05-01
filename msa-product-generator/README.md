@@ -13,8 +13,7 @@
 - **Асинхронная обработка**: Параллельная генерация и отправка данных в два потока
 - **Словари данных**: Использование обширных словарей (по 50+ позиций в каждом) для реалистичности
 - **REST API интеграция**: Отправка сгенерированных данных в указанный эндпоинт
-- **Поддержка базы данных**: Сохранение продуктов в PostgreSQL с использованием Liquibase для миграций
-- **Документация API**: Полная OpenAPI документация через Swagger UI
+- **Чистая архитектура**: Отсутствие зависимостей от базы данных - только генерация и отправка
 
 ## 🏗️ Архитектура
 
@@ -22,13 +21,13 @@
 
 - **Spring Boot 3.5.13** - основной фреймворк
 - **Kotlin 1.9.25** - язык программирования
-- **Spring Data JDBC** - работа с базой данных
-- **PostgreSQL** - основная СУБД
-- **Liquibase** - управление миграциями базы данных
 - **Spring Scheduler** - планировщик задач
 - **Spring Async** - асинхронное выполнение
-- **SpringDoc OpenAPI** - документация API
+- **Spring Web** - REST клиент для отправки данных
+- **SpringDoc OpenAPI** - документация API (если включена)
 - **Ktlint** - линтер для Kotlin
+
+**Важное изменение**: В версии 0.0.1+ удалены зависимости от базы данных (PostgreSQL, Spring Data JDBC, Liquibase). Теперь микросервис является чистым генератором данных, который отправляет их во внешний API без собственного хранилища.
 
 ## 📁 Структура проекта
 
@@ -37,15 +36,8 @@ msa-product-generator/
 ├── src/main/kotlin/ru/example/product/generator/
 │   ├── MsaProductGeneratorApplication.kt      # Точка входа приложения
 │   ├── config/                                # Конфигурационные классы
-│   │   ├── ThreadPoolConfig.kt               # Конфигурация пулов потоков
-│   │   ├── JdbcConfig.kt                     # Конфигурация JDBC
-│   │   ├── OpenApiConfig.kt                  # Конфигурация OpenAPI
-│   │   └── converter/JsonbConverters.kt      # Конвертеры JSONB
-│   ├── controller/                           # REST контроллеры
-│   │   ├── ProductController.kt              # Основной контроллер продуктов
-│   │   └── exception/GlobalExceptionHandler.kt # Обработчик исключений
+│   │   └── ThreadPoolConfig.kt               # Конфигурация пулов потоков
 │   ├── domain/                               # Доменные модели
-│   │   ├── ProductEntity.kt                  # Сущность продукта
 │   │   ├── ProductDto.kt                     # DTO продукта
 │   │   └── ProductCategory.kt                # Перечисление категорий
 │   ├── dto/                                  # DTO объекты
@@ -57,23 +49,12 @@ msa-product-generator/
 │   │   └── ProductDictionary.kt              # Словари данных
 │   ├── scheduler/                            # Планировщики
 │   │   └── ProductScheduler.kt               # Планировщик генерации
-│   ├── service/                              # Бизнес-логика
-│   │   ├── ProductService.kt                 # Интерфейс сервиса
-│   │   ├── ProductServiceImpl.kt             # Реализация сервиса
-│   │   └── ProductHandler.kt                 # Обработчик продуктов
-│   ├── repository/                           # Репозитории
-│   │   └── ProductRepository.kt              # Репозиторий продуктов
-│   ├── mappers/                              # Мапперы
-│   │   └── ProductMapper.kt                  # Маппер сущностей
 │   ├── client/                               # Клиенты внешних сервисов
 │   │   └── ProductBatchClient.kt             # Клиент для отправки батчей
 │   └── exception/                            # Исключения
 │       └── ProductNotFoundException.kt       # Исключение "Продукт не найден"
 ├── src/main/resources/
-│   ├── application.yaml                      # Основная конфигурация
-│   ├── openapi.yaml                          # Спецификация OpenAPI
-│   ├── db/changelog/                         # Миграции Liquibase
-│   └── Product API.postman_collection.json   # Коллекция Postman
+│   └── application.yaml                      # Основная конфигурация
 └── src/test/                                 # Тесты
 ```
 
@@ -82,8 +63,8 @@ msa-product-generator/
 ### Предварительные требования
 
 - **Java 17** или выше
-- **PostgreSQL 12+** (или Docker для запуска контейнера)
 - **Gradle 8+** (используется wrapper)
+- **Доступ к целевому REST API** (по умолчанию `http://localhost:8080/api/v1/products/batch`)
 
 ### Установка и запуск
 
@@ -93,29 +74,16 @@ msa-product-generator/
    cd msa-product-generator
    ```
 
-2. **Настройка базы данных**
+2. **Настройка целевого API (опционально)**
    ```bash
-   # Создание базы данных в PostgreSQL
-   createdb product_db
-   
-   # Или использование Docker
-   docker run --name product-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=product_db -p 5432:5432 -d postgres:15
-   ```
-
-3. **Настройка переменных окружения**
-   ```bash
-   # Linux/Mac
-   export DB_URL=jdbc:postgresql://localhost:5432/product_db
-   export DB_USER=postgres
-   export DB_PASSWORD=password
+   # Установите переменную окружения, если API работает на другом URL
+   export API_BASE_URL=http://your-api-host:port/api/v1/products/batch
    
    # Windows (CMD)
-   set DB_URL=jdbc:postgresql://localhost:5432/product_db
-   set DB_USER=postgres
-   set DB_PASSWORD=password
+   set API_BASE_URL=http://your-api-host:port/api/v1/products/batch
    ```
 
-4. **Запуск приложения**
+3. **Запуск приложения**
    ```bash
    # Используя Gradle wrapper
    ./gradlew bootRun
@@ -125,39 +93,38 @@ msa-product-generator/
    java -jar build/libs/msa-product-generator-0.0.1.jar
    ```
 
-5. **Проверка работы**
-   - Приложение будет доступно по адресу: `http://localhost:8080`
-   - Swagger UI: `http://localhost:8080/swagger-ui.html`
-   - API Docs: `http://localhost:8080/api-docs`
+4. **Проверка работы**
+   - Приложение запустится на порту 8081 (смотрите `application.yaml`)
+   - Планировщик начнет работу через 5 секунд после старта
+   - Каждые 60 секунд будет генерироваться и отправляться 10 продуктов
+   - Логи можно наблюдать в консоли
 
 ## ⚙️ Конфигурация
 
 Основные настройки в `application.yaml`:
 
 ```yaml
-# База данных
-spring:
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/product_db}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:password}
+# Server configuration
+server:
+  port: 8081 # Изменен с 8080 на 8081 для избежания конфликтов
 
-# Планировщик
+# Product generator scheduler configuration
 product:
   generator:
     thread-pool:
       core-size: 2      # Количество потоков для генерации
       max-size: 2       # Максимальное количество потоков
+      queue-capacity: 10
+      keep-alive-seconds: 60
+      thread-name-prefix: "product-gen-"
 ```
 
 ### Переменные окружения
 
 | Переменная | Описание | Значение по умолчанию |
 |------------|----------|----------------------|
-| `DB_URL` | URL базы данных PostgreSQL | `jdbc:postgresql://localhost:5432/product_db` |
-| `DB_USER` | Имя пользователя БД | `postgres` |
-| `DB_PASSWORD` | Пароль пользователя БД | `password` |
-| `SERVER_PORT` | Порт приложения | `8080` |
+| `API_BASE_URL` | URL целевого API для отправки продуктов | `http://localhost:8080/api/v1/products/batch` |
+| `SERVER_PORT` | Порт приложения | `8081` |
 
 ## 📊 Генерация продуктов
 
@@ -195,33 +162,31 @@ product:
 
 ## 🔧 API Endpoints
 
-### Основные эндпоинты
+**Важное замечание**: Данный микросервис не предоставляет REST API для управления продуктами. Он является клиентом, который отправляет данные в другой сервис.
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| `GET` | `/api/v1/products` | Получить список всех продуктов |
-| `GET` | `/api/v1/products/{id}` | Получить продукт по ID |
-| `POST` | `/api/v1/products` | Создать новый продукт |
-| `POST` | `/api/v1/products/batch` | Создать несколько продуктов (батч) |
-| `PUT` | `/api/v1/products/{id}` | Обновить продукт |
-| `DELETE` | `/api/v1/products/{id}` | Удалить продукт |
+### Отправка данных
 
-### Пример запроса создания продукта
+Микросервис отправляет сгенерированные продукты в целевой API используя следующий формат запроса:
 
 ```bash
-curl -X POST "http://localhost:8080/api/v1/products" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "sku": "AUD-WH-1000XM5-B",
-    "name": "Беспроводные наушники Sony WH-1000XM5 Black",
-    "description": "Полноразмерные наушники с лучшим в отрасли шумоподавлением, 30 часами работы и поддержкой Hi-Res Audio.",
-    "price": 34990.00,
-    "quantity": 15,
-    "isAvailable": true,
-    "category": "ELECTRONICS",
-    "weight": 0.25,
-    "tags": ["Bluetooth", "Шумоподавление"]
-  }'
+POST {API_BASE_URL}
+Content-Type: application/json
+
+{
+  "products": [
+    {
+      "sku": "AUD-WH-1000XM5-B",
+      "name": "Беспроводные наушники Sony WH-1000XM5 Black",
+      "description": "Полноразмерные наушники с лучшим в отрасли шумоподавлением, 30 часами работы и поддержкой Hi-Res Audio.",
+      "price": 34990.00,
+      "quantity": 15,
+      "isAvailable": true,
+      "category": "ELECTRONICS",
+      "weight": 0.25,
+      "tags": ["Bluetooth", "Шумоподавление"]
+    }
+  ]
+}
 ```
 
 ## ⏰ Планировщик задач
@@ -253,9 +218,6 @@ fun generateAndSubmitProducts() {
 # Все тесты
 ./gradlew test
 
-# С покрытием кода
-./gradlew test jacocoTestReport
-
 # Конкретный тестовый класс
 ./gradlew test --tests "*ProductGeneratorServiceTest"
 ```
@@ -266,13 +228,6 @@ fun generateAndSubmitProducts() {
    - `ProductGeneratorServiceTest` - тесты генерации продуктов
    - `ProductDictionaryTest` - тесты словарей данных
 
-2. **Интеграционные тесты**: Тестирование взаимодействия компонентов
-   - `ProductControllerTest` - тесты REST контроллера
-   - `ProductServiceParallelTest` - тесты параллельной обработки
-
-3. **Тесты приложения**: Общее тестирование приложения
-   - `MsaProductGeneratorApplicationTests` - контекстные тесты
-
 ## 🐳 Docker
 
 ### Сборка Docker образа
@@ -281,47 +236,18 @@ fun generateAndSubmitProducts() {
 # Сборка JAR
 ./gradlew build
 
-# Сборка Docker образа
+# Сборка Docker образа (если Dockerfile присутствует)
 docker build -t msa-product-generator:latest .
 ```
 
-### Docker Compose
+### Запуск в Docker
 
-Пример `docker-compose.yml` для полного развертывания:
-
-```yaml
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: product_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  app:
-    image: msa-product-generator:latest
-    environment:
-      DB_URL: jdbc:postgresql://postgres:5432/product_db
-      DB_USER: postgres
-      DB_PASSWORD: password
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-
-volumes:
-  postgres_data:
-```
-
-Запуск:
 ```bash
-docker-compose up -d
+docker run -d \
+  -e API_BASE_URL=http://your-api-host:port/api/v1/products/batch \
+  -p 8081:8081 \
+  --name product-generator \
+  msa-product-generator:latest
 ```
 
 ## 📈 Мониторинг и логирование
@@ -345,24 +271,29 @@ logging:
 - **API вызовы**: `ProductBatchClient` - логирует отправку данных
 - **Ошибки**: Все компоненты логируют исключения с полным стектрейсом
 
-## 🔄 Миграции базы данных
+## 🔄 Изменения в архитектуре
 
-### Использование Liquibase
+### Версия 0.0.1+
 
-Миграции находятся в `src/main/resources/db/changelog/`:
+В этой версии произведен рефакторинг архитектуры:
 
-- `db.changelog-master.yaml` - главный файл миграций
-- `changes/001-initial-schema.yaml` - начальная схема
+1. **Удалены зависимости от базы данных**:
+   - Удален Spring Data JDBC
+   - Удален PostgreSQL драйвер
+   - Удален Liquibase для миграций
+   - Удалены JdbcConfig и JsonbConverters
 
-### Создание новой миграции
+2. **Упрощена структура проекта**:
+   - Удалены контроллеры REST API
+   - Удалены сервисы для работы с БД
+   - Удалены репозитории и мапперы
+   - Удалены миграции базы данных
 
-```bash
-# Генерация SQL из существующей БД (опционально)
-./gradlew liquibaseDiffChangelog
-
-# Применение миграций при запуске
-./gradlew bootRun
-```
+3. **Новая фокусировка**:
+   - Микросервис теперь является чистым генератором данных
+   - Отправка данных только во внешний API
+   - Нет собственного хранилища
+   - Минимальные зависимости
 
 ## 🛠️ Разработка
 
@@ -393,7 +324,6 @@ logging:
 ### Ветвление
 
 - `master` - основная ветка, всегда стабильна
-- `develop` - ветка разработки
 - `feature/*` - ветки для новых функций
 - `bugfix/*` - ветки для исправления ошибок
 
