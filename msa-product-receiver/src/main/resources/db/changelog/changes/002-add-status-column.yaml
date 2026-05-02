@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-add-status-column
+      author: system
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  nullable: true
+                  afterColumn: is_available

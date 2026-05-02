@@ -6,6 +6,7 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.time.Instant
+import ru.example.product.receiver.domain.ProductStatus
 import java.util.*
 
 /**
@@ -30,6 +31,8 @@ data class ProductEntity(
     val weight: Double? = null,
     @Column("is_available")
     val isAvailable: Boolean,
+    @Column("status")
+    val status: ProductStatus? = null,
     @Column("category")
     val category: ProductCategory,
     @Column("tags")
