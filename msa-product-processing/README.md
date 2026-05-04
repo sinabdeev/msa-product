@@ -107,3 +107,46 @@ OpenAPI спецификация: `http://localhost:8082/api-docs`
 | `createdAt`     | Instant      | Дата создания         |
 | `updatedAt`     | Instant      | Дата обновления       |
 
+### ProductStatus
+
+Перечисление статусов продукта с кодами:
+
+| Статус | Код | Описание |
+|--------|-----|----------|
+| DRAFT | 0 | Черновик продукта |
+| PENDING_REVIEW | 10 | Ожидает проверки |
+| REVIEWED | 20 | Проверено модератором |
+| APPROVED | 30 | Утверждено менеджером |
+| REJECTED | 40 | Отклонено |
+| ACTIVE | 50 | Активно для продажи |
+| PROCESSED | 60 | Обработано (заказ собран) |
+| SHIPPED | 70 | Отправлено клиенту |
+| ARCHIVED | 80 | Архивировано (завершено) |
+
+### Система управления статусами
+
+Реализована система валидации переходов между статусами, позволяющая продукту двигаться по предопределенным путям и комбинировать их на ходу.
+
+**Компоненты:**
+- `ProductStatusTransitions` — матрица допустимых переходов
+- `ProductStatusTransitionValidator` — валидатор переходов
+- `ProductStatusTransitionService` — сервис выполнения переходов с записью истории
+- `ProductStatusHistoryService` — сервис истории изменений статуса
+- `ProductStatusHistoryRecord` — сущность записи истории
+
+**Основные пути:**
+1. Успешный workflow: `DRAFT → PENDING_REVIEW → REVIEWED → APPROVED → ACTIVE → PROCESSED → SHIPPED → ARCHIVED`
+2. Отклонение с исправлением: `DRAFT → PENDING_REVIEW → REVIEWED → REJECTED → PENDING_REVIEW → REVIEWED → APPROVED → ...`
+3. Досрочное архивирование: `DRAFT → PENDING_REVIEW → ARCHIVED`
+4. Восстановление из архива: `ARCHIVED → ACTIVE → PROCESSED → SHIPPED → ARCHIVED`
+
+**API:**
+- `ProductService.updateStatus(productId, targetStatus, reason?)` — изменить статус
+- `ProductService.getPossibleTransitions(productId)` — получить возможные переходы
+- `ProductStatusHistoryService.getHistory(productId)` — получить историю изменений
+
+**Исключения:**
+- `InvalidStatusTransitionException` — при попытке недопустимого перехода
+- `ProductNotFoundException` — если продукт не найден
+
+Подробная документация в директории `plans/`.
