@@ -6,14 +6,16 @@ import ru.example.product.processing.domain.ProductStatus
  * Валидатор допустимости переходов между статусами продукта.
  */
 interface ProductStatusTransitionValidator {
-
     /**
      * Проверяет, разрешен ли переход из текущего статуса в целевой.
      * @param current текущий статус продукта
      * @param target целевой статус
      * @return true если переход разрешен, false в противном случае
      */
-    fun isTransitionAllowed(current: ProductStatus, target: ProductStatus): Boolean
+    fun isTransitionAllowed(
+        current: ProductStatus,
+        target: ProductStatus,
+    ): Boolean
 
     /**
      * Возвращает множество статусов, в которые можно перейти из текущего.

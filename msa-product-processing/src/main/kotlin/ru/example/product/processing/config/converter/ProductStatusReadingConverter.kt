@@ -12,6 +12,8 @@ import ru.example.product.processing.domain.ProductStatus
 class ProductStatusReadingConverter : Converter<String, ProductStatus> {
     override fun convert(source: String): ProductStatus =
         ProductStatus.fromName(source) ?: throw IllegalArgumentException(
-            "Invalid ProductStatus value: '$source'. Valid values: ${ProductStatus.values().joinToString(", ") { it.name }}"
+            "Invalid ProductStatus value: '$source'. Valid values: ${ProductStatus.values().joinToString(
+                ", ",
+            ) { it.name }}",
         )
 }

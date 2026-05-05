@@ -7,7 +7,6 @@ import java.util.UUID
  * Сервис для ведения истории изменений статуса продукта.
  */
 interface ProductStatusHistoryService {
-
     /**
      * Записывает факт перехода статуса продукта.
      * @param productId идентификатор продукта
@@ -21,7 +20,7 @@ interface ProductStatusHistoryService {
         from: ProductStatus,
         to: ProductStatus,
         reason: String? = null,
-        userId: UUID? = null
+        userId: UUID? = null,
     )
 
     /**
@@ -42,5 +41,5 @@ data class ProductStatusHistoryRecord(
     val toStatus: ProductStatus,
     val timestamp: java.time.Instant,
     val userId: UUID?,
-    val reason: String?
+    val reason: String?,
 )

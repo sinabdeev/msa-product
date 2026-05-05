@@ -13,6 +13,7 @@ class InvalidStatusTransitionException(
     val productId: UUID? = null,
     val from: ProductStatus,
     val to: ProductStatus,
-    message: String = "Transition from $from to $to is not allowed" +
-            (productId?.let { " for product $it" } ?: "")
+    message: String =
+        "Transition from $from to $to is not allowed" +
+            (productId?.let { " for product $it" } ?: ""),
 ) : RuntimeException(message)

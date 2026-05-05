@@ -8,7 +8,6 @@ import java.util.UUID
  * Сервис для выполнения перехода статуса продукта.
  */
 interface ProductStatusTransitionService {
-
     /**
      * Выполняет переход статуса продукта по его идентификатору.
      * @param productId идентификатор продукта
@@ -23,7 +22,7 @@ interface ProductStatusTransitionService {
         productId: UUID,
         targetStatus: ProductStatus,
         reason: String? = null,
-        userId: UUID? = null
+        userId: UUID? = null,
     ): ProductEntity
 
     /**
@@ -39,7 +38,7 @@ interface ProductStatusTransitionService {
         product: ProductEntity,
         targetStatus: ProductStatus,
         reason: String? = null,
-        userId: UUID? = null
+        userId: UUID? = null,
     ): ProductEntity
 
     /**

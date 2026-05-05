@@ -31,7 +31,7 @@ interface ProductService {
     fun updateStatus(
         productId: UUID,
         targetStatus: ProductStatus,
-        reason: String? = null
+        reason: String? = null,
     ): ProductEntity
 
     /**

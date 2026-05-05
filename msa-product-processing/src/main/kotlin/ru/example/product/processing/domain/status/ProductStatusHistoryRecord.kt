@@ -15,22 +15,16 @@ import java.util.UUID
 data class ProductStatusHistoryRecord(
     @Id
     val id: UUID? = null,
-
     @Column("product_id")
     val productId: UUID,
-
     @Column("from_status")
     val fromStatus: ProductStatus,
-
     @Column("to_status")
     val toStatus: ProductStatus,
-
     @Column("timestamp")
     val timestamp: Instant = Instant.now(),
-
     @Column("user_id")
     val userId: UUID? = null,
-
     @Column("reason")
-    val reason: String? = null
+    val reason: String? = null,
 )

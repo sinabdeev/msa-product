@@ -10,7 +10,6 @@ import java.util.UUID
  */
 @Repository
 interface ProductStatusHistoryRepository : CrudRepository<ProductStatusHistoryRecord, UUID> {
-
     /**
      * Находит все записи истории для указанного продукта, отсортированные по времени (от старых к новым).
      * @param productId идентификатор продукта

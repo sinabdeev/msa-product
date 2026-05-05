@@ -15,18 +15,18 @@ import java.util.UUID
 class ProductStatusTransitionServiceImpl(
     private val productRepository: ProductRepository,
     private val validator: ProductStatusTransitionValidator,
-    private val historyService: ProductStatusHistoryService
+    private val historyService: ProductStatusHistoryService,
 ) : ProductStatusTransitionService {
-
     @Transactional
     override fun transitionProduct(
         productId: UUID,
         targetStatus: ProductStatus,
         reason: String?,
-        userId: UUID?
+        userId: UUID?,
     ): ProductEntity {
-        val product = productRepository.findById(productId)
-            .orElseThrow { ProductNotFoundException(productId) }
+        val product =
+            productRepository.findById(productId)
+                .orElseThrow { ProductNotFoundException(productId) }
         return transitionProduct(product, targetStatus, reason, userId)
     }
 
@@ -35,7 +35,7 @@ class ProductStatusTransitionServiceImpl(
         product: ProductEntity,
         targetStatus: ProductStatus,
         reason: String?,
-        userId: UUID?
+        userId: UUID?,
     ): ProductEntity {
         val currentStatus = product.status ?: ProductStatus.DRAFT
 
@@ -44,7 +44,7 @@ class ProductStatusTransitionServiceImpl(
             throw InvalidStatusTransitionException(
                 productId = product.id,
                 from = currentStatus,
-                to = targetStatus
+                to = targetStatus,
             )
         }
 
@@ -54,14 +54,15 @@ class ProductStatusTransitionServiceImpl(
             from = currentStatus,
             to = targetStatus,
             reason = reason,
-            userId = userId
+            userId = userId,
         )
 
         // Обновление продукта
-        val updatedProduct = product.copy(
-            status = targetStatus,
-            updatedAt = Instant.now()
-        )
+        val updatedProduct =
+            product.copy(
+                status = targetStatus,
+                updatedAt = Instant.now(),
+            )
 
         return productRepository.save(updatedProduct)
     }

@@ -14,7 +14,7 @@ import java.util.*
 @Service
 class ProductServiceImpl(
     private val productRepository: ProductRepository,
-    private val statusTransitionService: ProductStatusTransitionService
+    private val statusTransitionService: ProductStatusTransitionService,
 ) : ProductService {
     private val logger: Logger = LoggerFactory.getLogger(ProductServiceImpl::class.java)
 
@@ -38,7 +38,7 @@ class ProductServiceImpl(
     override fun updateStatus(
         productId: UUID,
         targetStatus: ProductStatus,
-        reason: String?
+        reason: String?,
     ): ProductEntity {
         logger.info("Updating status for product {} to {} with reason: {}", productId, targetStatus, reason)
         return statusTransitionService.transitionProduct(productId, targetStatus, reason)
@@ -47,8 +47,9 @@ class ProductServiceImpl(
     @Transactional(readOnly = true)
     override fun getPossibleTransitions(productId: UUID): Set<ProductStatus> {
         logger.debug("Getting possible transitions for product {}", productId)
-        val product = productRepository.findById(productId)
-            .orElseThrow { ProductNotFoundException(productId) }
+        val product =
+            productRepository.findById(productId)
+                .orElseThrow { ProductNotFoundException(productId) }
         val currentStatus = product.status ?: ProductStatus.DRAFT
         return statusTransitionService.getAllowedTransitions(currentStatus)
     }
