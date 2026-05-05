@@ -1,11 +1,10 @@
 package ru.example.product.processing.service.status
 
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import ru.example.product.processing.domain.ProductStatus
 
 class ProductStatusTransitionValidatorTest {
-
     private val validator = ProductStatusTransitionValidatorImpl()
 
     @Test
@@ -155,7 +154,7 @@ class ProductStatusTransitionValidatorTest {
         val allowed = validator.getAllowedTransitions(ProductStatus.PENDING_REVIEW)
         assertEquals(
             setOf(ProductStatus.REVIEWED, ProductStatus.ARCHIVED, ProductStatus.DRAFT),
-            allowed
+            allowed,
         )
     }
 
