@@ -2,6 +2,7 @@ package ru.example.product.processing.config.converter
 
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.WritingConverter
+import org.springframework.stereotype.Component
 import ru.example.product.processing.domain.ProductStatus
 
 /**
@@ -9,6 +10,7 @@ import ru.example.product.processing.domain.ProductStatus
  * Uses the enum name (e.g., "DRAFT", "ACTIVE") to match the VARCHAR column type.
  */
 @WritingConverter
+@Component
 class ProductStatusWritingConverter : Converter<ProductStatus, String> {
     override fun convert(source: ProductStatus): String = source.name
 }
