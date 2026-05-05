@@ -7,7 +7,6 @@ import ru.example.product.processing.domain.ProductStatus
 import ru.example.product.processing.exception.InvalidStatusTransitionException
 import ru.example.product.processing.exception.ProductNotFoundException
 import ru.example.product.processing.repository.ProductRepository
-import ru.example.product.processing.service.status.history.ProductStatusHistoryService
 import java.time.Instant
 import java.util.UUID
 
@@ -15,7 +14,6 @@ import java.util.UUID
 class ProductStatusTransitionServiceImpl(
     private val productRepository: ProductRepository,
     private val validator: ProductStatusTransitionValidator,
-    private val historyService: ProductStatusHistoryService,
 ) : ProductStatusTransitionService {
     @Transactional
     override fun transitionProduct(
@@ -47,15 +45,6 @@ class ProductStatusTransitionServiceImpl(
                 to = targetStatus,
             )
         }
-
-        // Запись истории
-        historyService.recordTransition(
-            productId = product.id!!,
-            from = currentStatus,
-            to = targetStatus,
-            reason = reason,
-            userId = userId,
-        )
 
         // Обновление продукта
         val updatedProduct =
