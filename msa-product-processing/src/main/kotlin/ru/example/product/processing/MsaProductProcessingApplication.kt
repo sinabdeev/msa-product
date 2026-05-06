@@ -2,9 +2,11 @@ package ru.example.product.processing
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.scheduling.annotation.EnableAsync // Добавьте импорт
+import org.springframework.scheduling.annotation.EnableAsync
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @EnableAsync // Активирует поддержку асинхронности
+@EnableScheduling // Активирует поддержку запланированных задач
 @SpringBootApplication
 class MsaProductProcessingApplication
 

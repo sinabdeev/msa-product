@@ -63,3 +63,9 @@ product:
       keep-alive-seconds: 60
       thread-name-prefix: "product-save-"
       allow-core-thread-timeout: true
+  scheduling:
+    # Enable/disable all scheduled tasks (useful for testing)
+    enabled: true
+    # doSomething task interval in milliseconds (default: 60000 = 1 minute)
+    do-something:
+      interval: 60000

@@ -150,3 +150,41 @@ OpenAPI спецификация: `http://localhost:8082/api-docs`
 - `ProductNotFoundException` — если продукт не найден
 
 Подробная документация в директории `plans/`.
+
+## Запланированные задачи (Scheduled Tasks)
+
+Приложение поддерживает выполнение циклических задач по расписанию с использованием Spring `@Scheduled`.
+
+### Конфигурация
+
+| Параметр | Тип | По умолчанию | Описание |
+|----------|-----|--------------|----------|
+| `product.scheduling.enabled` | boolean | `true` | Включить/выключить все запланированные задачи |
+| `product.scheduling.do-something.interval` | long | `60000` | Интервал выполнения в миллисекундах (по умолчанию 1 минута) |
+
+### Пример конфигурации в application.yaml
+
+```yaml
+product:
+  scheduling:
+    enabled: true
+    do-something:
+      interval: 60000  # 1 минута
+```
+
+### Добавление новых задач
+
+Создайте `@Component` класс в пакете `ru.example.product.processing.config` и используйте аннотацию `@Scheduled`:
+
+```kotlin
+@Component
+class MyScheduledTask {
+    @Scheduled(
+        fixedRateString = "\${product.scheduling.my-task.interval:60000}",
+        condition = "\${product.scheduling.enabled:true}"
+    )
+    fun doSomething() {
+        // логика задачи
+    }
+}
+```
