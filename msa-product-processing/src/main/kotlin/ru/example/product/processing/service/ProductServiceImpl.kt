@@ -53,4 +53,32 @@ class ProductServiceImpl(
         val currentStatus = product.status ?: ProductStatus.DRAFT
         return statusTransitionService.getAllowedTransitions(currentStatus)
     }
+
+    /**
+     * Process all products from the database.
+     * @return List of processed product entities
+     */
+    override fun processProducts(): List<ProductEntity> {
+        logger.info("Starting batch product processing")
+        val products = productRepository.findAllByOrderByCreatedAtDesc()
+        logger.info("Found {} products to process", products.size)
+
+        val processedProducts = products.map { product ->
+            processProduct(product)
+        }
+
+        logger.info("Finished batch product processing. Processed {} products", processedProducts.size)
+        return processedProducts
+    }
+
+    /**
+     * Process a single product (log id and status).
+     * @param product Product entity to process
+     * @return The processed product entity
+     */
+    private fun processProduct(product: ProductEntity): ProductEntity {
+        val status = product.status?.name ?: ProductStatus.DRAFT.name
+        logger.info("Processing product: id={}, status={}", product.id, status)
+        return product
+    }
 }

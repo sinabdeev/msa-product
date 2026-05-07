@@ -40,4 +40,10 @@ interface ProductService {
      * @return Set of statuses that can be transitioned to from the current status
      */
     fun getPossibleTransitions(productId: UUID): Set<ProductStatus>
+
+    /**
+     * Process all products from the database.
+     * @return List of processed product entities
+     */
+    fun processProducts(): List<ProductEntity>
 }
