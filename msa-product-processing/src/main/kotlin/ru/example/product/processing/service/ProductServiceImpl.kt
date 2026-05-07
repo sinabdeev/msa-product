@@ -63,9 +63,10 @@ class ProductServiceImpl(
         val products = productRepository.findAllByOrderByCreatedAtDesc()
         logger.info("Found {} products to process", products.size)
 
-        val processedProducts = products.map { product ->
-            processProduct(product)
-        }
+        val processedProducts =
+            products.map { product ->
+                processProduct(product)
+            }
 
         logger.info("Finished batch product processing. Processed {} products", processedProducts.size)
         return processedProducts
