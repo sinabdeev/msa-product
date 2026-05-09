@@ -85,7 +85,7 @@ class ProductServiceImpl(
      */
     private fun fetchFirstMProducts(): List<ProductEntity> {
         val m = (15..30).random() // range [15, 30]
-        return productRepository.findFirstByOrderByCreatedAtDesc(m)
+        return productRepository.getActiveProducts(m)
     }
 
     /**

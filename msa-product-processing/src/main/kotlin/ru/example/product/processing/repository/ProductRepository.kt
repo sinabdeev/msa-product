@@ -12,24 +12,21 @@ import java.util.*
 @Repository
 interface ProductRepository : CrudRepository<ProductEntity, UUID> {
     /**
-     * Find product by SKU (case-sensitive).
-     */
-    fun findBySku(sku: String): ProductEntity?
-
-    /**
      * Check if a product with given SKU exists.
      */
     fun existsBySku(sku: String): Boolean
 
     /**
-     * Find all products ordered by creation date descending.
-     */
-    fun findAllByOrderByCreatedAtDesc(): List<ProductEntity>
-
-    /**
-     * Find first M products ordered by creation date descending with LIMIT.
+     * Find first M products ordered by creation date descending, excluding ARCHIVED status.
+     * Includes products with NULL status.
      * @param count Maximum number of products to return
      */
-    @Query("SELECT * FROM products ORDER BY created_at DESC LIMIT :count")
-    fun findFirstByOrderByCreatedAtDesc(count: Int): List<ProductEntity>
+    @Query(
+        " " +
+            " SELECT * FROM products " +
+            " WHERE status IS NULL OR status != 'ARCHIVED' " +
+            " ORDER BY created_at " +
+            " LIMIT :count ",
+    )
+    fun getActiveProducts(count: Int): List<ProductEntity>
 }
