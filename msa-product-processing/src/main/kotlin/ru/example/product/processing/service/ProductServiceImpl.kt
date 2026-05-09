@@ -60,16 +60,43 @@ class ProductServiceImpl(
      */
     override fun processProducts(): List<ProductEntity> {
         logger.info("Starting batch product processing")
-        val products = productRepository.findAllByOrderByCreatedAtDesc()
-        logger.info("Found {} products to process", products.size)
 
+        // Step 1: Get first M products (M = 15-30)
+        val mProducts = fetchFirstMProducts()
+        logger.info("Fetched {} products (M)", mProducts.size)
+
+        // Step 2: Random selection of N products from M (N = 2-10)
+        val selectedProducts = randomSelection(mProducts)
+        logger.info("Randomly selected {} products (N) from {}", selectedProducts.size, mProducts.size)
+
+        // Step 3: Process selected products
         val processedProducts =
-            products.map { product ->
+            selectedProducts.map { product ->
                 processProduct(product)
             }
 
         logger.info("Finished batch product processing. Processed {} products", processedProducts.size)
         return processedProducts
+    }
+
+    /**
+     * Fetch first M products from the repository, where M is a random value between 15 and 30.
+     * @return List of M products sorted by created_at descending
+     */
+    private fun fetchFirstMProducts(): List<ProductEntity> {
+        val m = (15..30).random() // range [15, 30]
+        return productRepository.findFirstByOrderByCreatedAtDesc(m)
+    }
+
+    /**
+     * Perform random selection of N products from the given list, where N is a random value between 2 and 10.
+     * @param products Input list of products
+     * @return List of N randomly selected products
+     */
+    private fun randomSelection(products: List<ProductEntity>): List<ProductEntity> {
+        val n = minOf((2..10).random(), products.size) // range [2, 10], capped by available products
+        val shuffled = products.shuffled()
+        return shuffled.take(n)
     }
 
     /**

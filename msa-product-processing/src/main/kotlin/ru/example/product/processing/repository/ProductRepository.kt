@@ -1,5 +1,6 @@
 package ru.example.product.processing.repository
 
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import ru.example.product.processing.domain.ProductEntity
@@ -24,4 +25,11 @@ interface ProductRepository : CrudRepository<ProductEntity, UUID> {
      * Find all products ordered by creation date descending.
      */
     fun findAllByOrderByCreatedAtDesc(): List<ProductEntity>
+
+    /**
+     * Find first M products ordered by creation date descending with LIMIT.
+     * @param count Maximum number of products to return
+     */
+    @Query("SELECT * FROM products ORDER BY created_at DESC LIMIT :count")
+    fun findFirstByOrderByCreatedAtDesc(count: Int): List<ProductEntity>
 }

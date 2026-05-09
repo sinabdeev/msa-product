@@ -19,7 +19,7 @@ class ScheduleService(
      * Process all products periodically.
      */
     @Scheduled(
-        fixedDelayString = "\${product.scheduling.product-processing.interval:60000}",
+        fixedDelayString = "\${product.scheduling.product-processing.interval:10000}",
         initialDelayString = "\${product.scheduling.product-processing.initial-delay:10000}",
     )
     fun processAllProducts() {

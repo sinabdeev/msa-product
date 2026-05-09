@@ -69,5 +69,5 @@ product:
     # Product processing task interval in milliseconds (default: 60000 = 1 minute)
     # Initial delay in milliseconds (default: 10000 = 10 seconds)
     product-processing:
-      interval: 60000
+      interval: 10000
       initial-delay: 10000
