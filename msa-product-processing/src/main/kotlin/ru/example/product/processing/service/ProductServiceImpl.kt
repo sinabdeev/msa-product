@@ -100,13 +100,22 @@ class ProductServiceImpl(
     }
 
     /**
-     * Process a single product (log id and status).
+     * Process a single product by randomly transitioning its status to one of the allowed transitions.
      * @param product Product entity to process
-     * @return The processed product entity
+     * @return The updated product entity with the new status
      */
     private fun processProduct(product: ProductEntity): ProductEntity {
-        val status = product.status?.name ?: ProductStatus.DRAFT.name
-        logger.info("Processing product: id={}, status={}", product.id, status)
-        return product
+        val currentStatus = product.status ?: ProductStatus.DRAFT
+        val allowedTransitions = statusTransitionService.getAllowedTransitions(currentStatus)
+
+        if (allowedTransitions.isEmpty()) {
+            logger.warn("No allowed transitions for product {} with status {}", product.id, currentStatus)
+            return product
+        }
+
+        val targetStatus = allowedTransitions.toList().shuffled().first()
+        logger.info("Processing product: id={}, fromStatus={}, toStatus={}", product.id, currentStatus, targetStatus)
+
+        return statusTransitionService.transitionProduct(product, targetStatus, "Batch processing")
     }
 }
