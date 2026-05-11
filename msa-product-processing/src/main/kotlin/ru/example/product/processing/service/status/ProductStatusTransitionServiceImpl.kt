@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.example.product.processing.domain.ProductEntity
 import ru.example.product.processing.domain.ProductStatus
+import ru.example.product.processing.domain.status.StatusHistoryEntity
 import ru.example.product.processing.exception.InvalidStatusTransitionException
 import ru.example.product.processing.exception.ProductNotFoundException
 import ru.example.product.processing.repository.ProductRepository
+import ru.example.product.processing.repository.StatusHistoryRepository
 import java.time.Instant
 import java.util.UUID
 
@@ -14,6 +16,7 @@ import java.util.UUID
 class ProductStatusTransitionServiceImpl(
     private val productRepository: ProductRepository,
     private val validator: ProductStatusTransitionValidator,
+    private val statusHistoryRepository: StatusHistoryRepository,
 ) : ProductStatusTransitionService {
     @Transactional
     override fun transitionProduct(
@@ -53,7 +56,21 @@ class ProductStatusTransitionServiceImpl(
                 updatedAt = Instant.now(),
             )
 
-        return productRepository.save(updatedProduct)
+        val savedProduct = productRepository.save(updatedProduct)
+
+        // Record status history
+        val historyEntry =
+            StatusHistoryEntity(
+                productId = product.id!!,
+                fromStatus = currentStatus.name,
+                toStatus = targetStatus.name,
+                reason = reason,
+                userId = userId,
+                createdAt = Instant.now(),
+            )
+        statusHistoryRepository.save(historyEntry)
+
+        return savedProduct
     }
 
     override fun getAllowedTransitions(current: ProductStatus): Set<ProductStatus> {
