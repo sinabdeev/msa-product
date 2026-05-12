@@ -25,4 +25,6 @@ data class StatusHistoryEntity(
     val userId: UUID? = null,
     @Column("created_at")
     val createdAt: Instant,
+    @Column("processing_duration_seconds")
+    val durationSeconds: Long? = null,
 )

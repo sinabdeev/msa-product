@@ -58,6 +58,13 @@ class ProductStatusTransitionServiceImpl(
 
         val savedProduct = productRepository.save(updatedProduct)
 
+        // Calculate processing duration if transitioning to ARCHIVED
+        val durationSeconds = if (targetStatus == ProductStatus.ARCHIVED && product.createdAt != null) {
+            Instant.now().epochSecond - product.createdAt!!.epochSecond
+        } else {
+            null
+        }
+
         // Record status history
         val historyEntry =
             StatusHistoryEntity(
@@ -67,6 +74,7 @@ class ProductStatusTransitionServiceImpl(
                 reason = reason,
                 userId = userId,
                 createdAt = Instant.now(),
+                durationSeconds = durationSeconds,
             )
         statusHistoryRepository.save(historyEntry)
 
