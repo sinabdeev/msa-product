@@ -20,7 +20,6 @@ class ProductHandler(
     private val productRepository: ProductRepository,
     private val productMapper: ProductMapper,
 ) {
-
     private val logger: Logger = LoggerFactory.getLogger(ProductHandler::class.java)
 
     /**

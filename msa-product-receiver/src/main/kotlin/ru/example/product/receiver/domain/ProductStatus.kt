@@ -13,7 +13,8 @@ enum class ProductStatus(val code: Int) {
     ACTIVE(50),
     PROCESSED(60),
     SHIPPED(70),
-    ARCHIVED(80);
+    ARCHIVED(80),
+    ;
 
     companion object {
         private val CODE_MAP = values().associateBy(ProductStatus::code)

@@ -6,7 +6,6 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.time.Instant
-import ru.example.product.receiver.domain.ProductStatus
 import java.util.*
 
 /**
