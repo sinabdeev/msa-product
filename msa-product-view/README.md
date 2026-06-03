@@ -2,8 +2,6 @@
 
 Страница с 9 анимированными графиками для визуализации данных из таблицы `product.product_status_history`. При получении новых данных графики **плавно анимируют переходы** — столбцы гистограмм и сектора круговых диаграмм меняют свои размеры с анимацией.
 
-Страница с 9 анимированными графиками для визуализации данных из таблицы `product.product_status_history`.
-
 ## Стек
 
 - **React 18** + **TypeScript**
@@ -45,8 +43,8 @@ CREATE TABLE product.product_status_history (
 | `to_status` | string | нет | Фильтр по целевому статусу |
 | `product_id` | uuid | нет | Фильтр по продукту |
 | `user_id` | uuid | нет | Фильтр по пользователю |
-| `created_after` | ISO datetime | нет | Записи не ранее указанной даты |
-| `created_before` | ISO datetime | нет | Записи не позднее указанной даты |
+| `created_after` | datetime | нет | Записи не ранее указанной даты (формат: `YYYY-MM-DD HH:mm:ss.SSS`) |
+| `created_before` | datetime | нет | Записи не позднее указанной даты |
 
 **Пример ответа (200 OK):**
 
@@ -54,14 +52,14 @@ CREATE TABLE product.product_status_history (
 {
   "data": [
     {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "product_id": "660e8400-e29b-41d4-a716-446655440001",
-      "from_status": "draft",
-      "to_status": "pending_review",
-      "reason": "specification_error",
-      "user_id": "770e8400-e29b-41d4-a716-446655440002",
-      "created_at": "2026-06-01T12:00:00Z",
-      "processing_duration_seconds": 120
+      "id": "57b22126-86aa-444c-b6ad-cc460446a765",
+      "product_id": "7bee6ccd-93a5-4842-86d7-6c84d81d979b",
+      "from_status": "DRAFT",
+      "to_status": "PENDING_REVIEW",
+      "reason": "Batch processing",
+      "user_id": null,
+      "created_at": "2026-05-11 22:10:49.023",
+      "processing_duration_seconds": null
     }
   ],
   "total": 1500,
@@ -80,25 +78,29 @@ CREATE TABLE product.product_status_history (
 | `to_status` | string | Новый статус |
 | `reason` | string или null | Причина изменения |
 | `user_id` | string (uuid) или null | ID пользователя |
-| `created_at` | string (ISO 8601) | Дата создания |
+| `created_at` | string | Дата создания (формат: `YYYY-MM-DD HH:mm:ss.SSS`, без часового пояса) |
 | `processing_duration_seconds` | number или null | Длительность обработки (сек) |
 
-**Возможные значения статусов:**
+**Возможные значения статусов (9 шт.):**
 
-- `draft` — черновик
-- `pending_review` — ожидает проверки
-- `approved` — одобрено
-- `rejected` — отклонено
-- `published` — опубликовано
-- `archived` — архивировано
+| Статус | Описание |
+|--------|----------|
+| `DRAFT` | Черновик |
+| `PENDING_REVIEW` | Ожидает проверки |
+| `REVIEWED` | Проверено |
+| `APPROVED` | Одобрено |
+| `REJECTED` | Отклонено |
+| `ARCHIVED` | Архивировано |
+| `ACTIVE` | Активно |
+| `PROCESSED` | Обработано |
+| `SHIPPED` | Отгружено |
 
 **Возможные значения причин (reason):**
 
-- `specification_error` — ошибка в спецификации
-- `design_review` — проверка дизайна
-- `quality_check` — контроль качества
-- `content_update` — обновление контента
-- `expired` — истёк срок
+| Причина | Описание |
+|---------|----------|
+| `Batch processing` | Пакетная обработка (всегда одна и та же в текущих данных) |
+| `null` | Причина не указана |
 
 ### Частота запросов (Polling)
 
@@ -114,10 +116,10 @@ CREATE TABLE product.product_status_history (
 ## Графики (сетка 3×3)
 
 ### Гистограммы (BarChart)
-1. **Переходы по статусам** — количество записей по `to_status`
+1. **Переходы по статусам** — количество записей по `to_status` (9 статусов)
 2. **Среднее время обработки** — AVG(`processing_duration_seconds`) по `to_status`
 3. **Топ продуктов** — топ-10 `product_id` по количеству переходов
-4. **Причины переходов** — распределение `reason`
+4. **Причины переходов** — распределение `reason` (в текущих данных — только `Batch processing`)
 5. **Активность пользователей** — топ-10 `user_id` по количеству изменений
 
 ### Круговые диаграммы (PieChart)
