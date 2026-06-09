@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-product-status-history-table
+      author: system
+      changes:
+        - createTable:
+            tableName: product_status_history
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: from_status
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: to_status
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reason
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_product_status_history_product_id
+            tableName: product_status_history
+            columns:
+              - column:
+                  name: product_id
+                  descending: false

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-add-processing-duration-column
+      author: system
+      changes:
+        - addColumn:
+            tableName: product_status_history
+            columns:
+              - column:
+                  name: processing_duration_seconds
+                  type: BIGINT
+                  constraints:
+                    nullable: true
