@@ -6,8 +6,8 @@ import org.springframework.scheduling.annotation.EnableAsync // Добавьте
 
 @EnableAsync // Активирует поддержку асинхронности
 @SpringBootApplication
-class MsaProductReceiverApplication
+class MsaProductDataApplication
 
 fun main(args: Array<String>) {
-    runApplication<MsaProductReceiverApplication>(*args)
+    runApplication<MsaProductDataApplication>(*args)
 }
