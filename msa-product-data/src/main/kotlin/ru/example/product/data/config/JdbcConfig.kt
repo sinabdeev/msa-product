@@ -13,6 +13,7 @@ class JdbcConfig(
     private val listToJsonbConverter: TagsWritingConverter,
     private val jsonbToListConverter: TagsReadingConverter,
 ) : AbstractJdbcConfiguration() {
+
     override fun userConverters(): List<*> {
         return listOf(listToJsonbConverter, jsonbToListConverter)
     }
