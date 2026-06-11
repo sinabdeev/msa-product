@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useRealtimeData } from '../hooks/useRealtimeData';
+import { ApiDataService } from '../services/apiDataService';
 import { logger } from '../utils/logger';
 import StatusBarChart from './charts/StatusBarChart';
 import AvgProcessingTimeChart from './charts/AvgProcessingTimeChart';
@@ -12,7 +13,7 @@ import FromStatusPieChart from './charts/FromStatusPieChart';
 import HourlyActivityChart from './charts/HourlyActivityChart';
 
 export default function Dashboard() {
-  const { aggregatedData, loading, error } = useRealtimeData();
+  const { aggregatedData, loading, error } = useRealtimeData(new ApiDataService());
 
   useEffect(() => {
     logger.info('Dashboard', 'MOUNT');
