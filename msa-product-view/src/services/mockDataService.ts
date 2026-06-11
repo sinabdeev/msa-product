@@ -51,8 +51,6 @@ function generateRecord(createdAt?: Date): StatusHistoryRecord {
 }
 
 export class MockDataService implements DataService {
-  private records: StatusHistoryRecord[] = [];
-
   async fetchRecords(): Promise<StatusHistoryRecord[]> {
     const startTime = Date.now();
     logger.debug('DataService', 'FETCH_START', { mode: 'initial' });
@@ -66,7 +64,6 @@ export class MockDataService implements DataService {
       records.push(generateRecord(new Date(randomTime)));
     }
 
-    this.records = records;
     const durationMs = Date.now() - startTime;
     const estimatedSize = `~${Math.round(JSON.stringify(records).length / 1024)}KB`;
 
@@ -76,39 +73,9 @@ export class MockDataService implements DataService {
       durationMs 
     });
     logger.debug('DataService', 'MOCK_GENERATE', { 
-      generatedCount: records.length, 
-      totalPoolSize: this.records.length 
+      generatedCount: records.length 
     });
 
     return records;
-  }
-
-  async fetchNewRecords(_createdAfter: string): Promise<StatusHistoryRecord[]> {
-    const startTime = Date.now();
-    logger.debug('DataService', 'FETCH_START', { mode: 'polling' });
-
-    // Генерируем 1-5 новых записей с текущим временем
-    const count = Math.floor(Math.random() * 5) + 1;
-    const newRecords: StatusHistoryRecord[] = [];
-    
-    for (let i = 0; i < count; i++) {
-      newRecords.push(generateRecord(new Date()));
-    }
-
-    this.records.push(...newRecords);
-    const durationMs = Date.now() - startTime;
-    const estimatedSize = `~${Math.round(JSON.stringify(newRecords).length / 1024)}KB`;
-
-    logger.success('DataService', 'FETCH_SUCCESS', { 
-      recordsCount: newRecords.length, 
-      estimatedSize, 
-      durationMs 
-    });
-    logger.debug('DataService', 'MOCK_GENERATE', { 
-      generatedCount: newRecords.length, 
-      totalPoolSize: this.records.length 
-    });
-
-    return newRecords;
   }
 }

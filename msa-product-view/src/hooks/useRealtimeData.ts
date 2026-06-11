@@ -11,9 +11,8 @@ export function useRealtimeData(dataService: DataService = new MockDataService()
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   
-  const lastTimestampRef = useRef<string>('');
-  const tickCountRef = useRef(0);
   const intervalIdRef = useRef<number | null>(null);
+  const tickCountRef = useRef(0);
 
   // Первичная загрузка данных
   useEffect(() => {
@@ -24,23 +23,18 @@ export function useRealtimeData(dataService: DataService = new MockDataService()
       try {
         const initialRecords = await dataService.fetchRecords();
         setRecords(initialRecords);
-        
-        if (initialRecords.length > 0) {
-          lastTimestampRef.current = initialRecords[initialRecords.length - 1].createdAt;
-        }
 
         const aggregated = aggregateAll(initialRecords);
         setAggregatedData(aggregated);
         setLoading(false);
 
         logger.success('useRealtimeData', 'INIT_LOAD_SUCCESS', { 
-          recordsCount: initialRecords.length, 
-          lastTimestamp: lastTimestampRef.current 
+          recordsCount: initialRecords.length 
         });
         logger.groupEnd();
 
-        // Запуск тикера
-        logger.info('useRealtimeData', 'TICKER_START', { intervalMs: 1000 });
+        // Запуск периодического обновления
+        logger.info('useRealtimeData', 'TICKER_START', { intervalMs: 5000 });
         
         intervalIdRef.current = window.setInterval(async () => {
           tickCountRef.current += 1;
@@ -50,31 +44,21 @@ export function useRealtimeData(dataService: DataService = new MockDataService()
           const pollStartTime = Date.now();
 
           try {
-            const newRecords = await dataService.fetchNewRecords(lastTimestampRef.current);
+            const freshRecords = await dataService.fetchRecords();
             
-            if (newRecords.length === 0) {
+            if (freshRecords.length === 0) {
               logger.info('useRealtimeData', 'POLL_EMPTY', { tickNumber });
               return;
             }
 
-            setRecords(prev => {
-              const updated = [...prev, ...newRecords];
-              
-              if (newRecords.length > 0) {
-                lastTimestampRef.current = newRecords[newRecords.length - 1].createdAt;
-              }
+            setRecords(freshRecords);
+            const aggregated = aggregateAll(freshRecords);
+            setAggregatedData(aggregated);
 
-              const aggregated = aggregateAll(updated);
-              setAggregatedData(aggregated);
-
-              const tickMs = Date.now() - pollStartTime;
-              logger.success('useRealtimeData', 'POLL_SUCCESS', { 
-                newRecords: newRecords.length, 
-                totalRecords: updated.length, 
-                tickMs 
-              });
-
-              return updated;
+            const tickMs = Date.now() - pollStartTime;
+            logger.success('useRealtimeData', 'POLL_SUCCESS', { 
+              recordsCount: freshRecords.length, 
+              tickMs 
             });
           } catch (err) {
             const error = err as Error;
@@ -83,7 +67,7 @@ export function useRealtimeData(dataService: DataService = new MockDataService()
               tickNumber 
             });
           }
-        }, 1000);
+        }, 5000);
       } catch (err) {
         const error = err as Error;
         logger.error('useRealtimeData', 'INIT_LOAD_ERROR', { errorMessage: error.message });
