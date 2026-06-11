@@ -1,5 +1,6 @@
 package ru.example.product.data.repository
 
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import ru.example.product.data.domain.ProductStatusHistoryEntity
@@ -15,6 +16,7 @@ interface ProductStatusHistoryRepository : CrudRepository<ProductStatusHistoryEn
     /**
      * Найти последние N записей, отсортированные по времени создания (новые первые).
      */
+    @Query("SELECT * FROM product_status_history ORDER BY created_at DESC LIMIT :limit")
     fun findTopByOrderByCreatedAtDesc(limit: Int): List<ProductStatusHistoryEntity>
 
     /**

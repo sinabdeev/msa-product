@@ -10,7 +10,7 @@ import java.util.*
  * Database entity for product status history records.
  * Maps to table: product.product_status_history
  */
-@Table("product.product_status_history")
+@Table("product_status_history")
 data class ProductStatusHistoryEntity(
     @Id
     val id: UUID? = null,

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Product API
-  description: Product management API for msa-product-data
+  title: Product Status History API
+  description: Product status history API for msa-product-data
   version: v1.0.0
   contact:
     name: Product Team
@@ -15,317 +15,179 @@ servers:
   - url: https://api.example.com
     description: Production server
 tags:
-  - name: Products
-    description: Product management operations
+  - name: Status History
+    description: Product status history operations
 paths:
-  /api/v1/products:
+  /api/v1/status-history:
     get:
       tags:
-        - Products
-      summary: Get all products
-      description: Retrieve a list of all products
-      operationId: getAllProducts
+        - Status History
+      summary: Get product status history records
+      description: Retrieve product status history records with optional filters
+      operationId: getStatusHistory
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1000
+            minimum: 1
+            maximum: 10000
+          description: Maximum number of records to return
+        - name: created_after
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Return records after this timestamp (inclusive)
+        - name: productId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Product ID filter
+        - name: toStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - DRAFT
+              - PENDING_REVIEW
+              - REVIEWED
+              - APPROVED
+              - REJECTED
+              - ACTIVE
+              - PROCESSED
+              - SHIPPED
+              - ARCHIVED
+          description: Filter by status after transition
+        - name: fromStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - DRAFT
+              - PENDING_REVIEW
+              - REVIEWED
+              - APPROVED
+              - REJECTED
+              - ACTIVE
+              - PROCESSED
+              - SHIPPED
+              - ARCHIVED
+          description: Filter by status before transition
       responses:
         '200':
-          description: List of products
+          description: Status history retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseListProductDto'
-    post:
-      tags:
-        - Products
-      summary: Create a new product
-      description: Create a new product with the provided data
-      operationId: createProduct
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProductRequest'
-      responses:
-        '201':
-          description: Product created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseProductDto'
-        '400':
-          description: Invalid input
-        '409':
-          description: Product with same SKU already exists
-  /api/v1/products/batch:
-    post:
-      tags:
-        - Products
-      summary: Create multiple products in batch
-      description: Create multiple products in a single atomic operation
-      operationId: batchCreateProducts
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProductsBatchRequest'
-      responses:
-        '201':
-          description: Products created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseListProductDto'
+                $ref: '#/components/schemas/ApiResponseListProductStatusHistoryDto'
         '400':
           description: Invalid input or validation failed
-  /api/v1/products/{id}:
-    get:
-      tags:
-        - Products
-      summary: Get product by ID
-      description: Retrieve a product by its unique identifier
-      operationId: getProduct
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: Product ID
-      responses:
-        '200':
-          description: Product found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseProductDto'
-        '404':
-          description: Product not found
-    put:
-      tags:
-        - Products
-      summary: Update product
-      description: Update an existing product
-      operationId: updateProduct
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: Product ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateProductRequest'
-      responses:
-        '200':
-          description: Product updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseProductDto'
-        '400':
-          description: Invalid input
-        '404':
-          description: Product not found
-        '409':
-          description: Product with same SKU already exists
-    delete:
-      tags:
-        - Products
-      summary: Delete product
-      description: Delete a product by its ID
-      operationId: deleteProduct
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: Product ID
-      responses:
-        '204':
-          description: Product deleted successfully
-        '404':
-          description: Product not found
 components:
   schemas:
-    ProductDto:
+    ProductStatusHistoryDto:
       type: object
       properties:
         id:
           type: string
-          format: uuid
-          description: Unique identifier
-        sku:
+          description: ID of the history record
+        productId:
           type: string
-          description: Stock keeping unit (article number)
-        name:
+          description: ID of the product
+        fromStatus:
           type: string
-          description: Product name
-        description:
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Status before transition
+        toStatus:
           type: string
-          description: Product description
-        price:
-          type: number
-          format: decimal
-          description: Price in currency
-        quantity:
-          type: integer
-          description: Quantity in stock
-        weight:
-          type: number
-          format: double
-          description: Weight in kilograms
-        isAvailable:
-          type: boolean
-          description: Availability flag
-        category:
-          $ref: '#/components/schemas/ProductCategory'
-        tags:
-          type: array
-          items:
-            type: string
-          description: List of tags
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Status after transition
+        reason:
+          type: string
+          nullable: true
+          description: Transition reason
+        userId:
+          type: string
+          nullable: true
+          description: User ID who triggered the transition
         createdAt:
           type: string
           format: date-time
-          description: Creation timestamp
-        updatedAt:
-          type: string
-          format: date-time
-          description: Last update timestamp
-    ProductCategory:
-      type: string
-      enum:
-        - ELECTRONICS
-        - CLOTHING
-        - FOOD
-        - HOME_GOODS
-      description: Product category enumeration
-    CreateProductRequest:
-      type: object
-      required:
-        - sku
-        - name
-        - description
-        - price
-        - quantity
-        - isAvailable
-        - category
-      properties:
-        sku:
-          type: string
-          minLength: 1
-          maxLength: 50
-          description: Stock keeping unit (article number)
-        name:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Product name
-        description:
-          type: string
-          description: Product description
-        price:
-          type: number
-          format: decimal
-          minimum: 0
-          exclusiveMinimum: true
-          description: Price in currency
-        quantity:
+          description: Record creation timestamp
+        processingDurationSeconds:
           type: integer
-          minimum: 0
-          description: Quantity in stock
-        weight:
-          type: number
-          format: double
-          description: Weight in kilograms
-        isAvailable:
-          type: boolean
-          description: Availability flag
-        category:
-          type: string
-          description: Product category
-        tags:
-          type: array
-          items:
-            type: string
-          description: List of tags
-   CreateProductsBatchRequest:
-     type: object
-     required:
-       - products
-     properties:
-       products:
-         type: array
-         minItems: 1
-         maxItems: 100
-         items:
-           $ref: '#/components/schemas/CreateProductRequest'
-         description: List of products to create
-   UpdateProductRequest:
-     type: object
-     properties:
-       sku:
-         type: string
-         minLength: 1
-         maxLength: 50
-         description: Stock keeping unit (article number)
-        name:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Product name
-        description:
-          type: string
-          description: Product description
-        price:
-          type: number
-          format: decimal
-          minimum: 0
-          exclusiveMinimum: true
-          description: Price in currency
-        quantity:
-          type: integer
-          minimum: 0
-          description: Quantity in stock
-        weight:
-          type: number
-          format: double
-          description: Weight in kilograms
-        isAvailable:
-          type: boolean
-          description: Availability flag
-        category:
-          type: string
-          description: Product category
-        tags:
-          type: array
-          items:
-            type: string
-          description: List of tags
-    ApiResponseProductDto:
+          format: int64
+          nullable: true
+          description: Processing duration in seconds
+    StatusHistoryQueryRequest:
       type: object
       properties:
-        success:
-          type: boolean
-          description: Indicates if the request was successful
-        message:
-          type: string
-          description: Response message
-        data:
-          $ref: '#/components/schemas/ProductDto'
-        timestamp:
+        limit:
+          type: integer
+          default: 1000
+          minimum: 1
+          maximum: 10000
+          description: Maximum number of records to return
+        createdAfter:
           type: string
           format: date-time
-          description: Timestamp of the response
-    ApiResponseListProductDto:
+          description: Return records after this timestamp (inclusive)
+        productId:
+          type: string
+          format: uuid
+          description: Product ID filter
+        toStatus:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Filter by status after transition
+        fromStatus:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Filter by status before transition
+    ApiResponseListProductStatusHistoryDto:
       type: object
       properties:
         success:
@@ -337,7 +199,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/ProductDto'
+            $ref: '#/components/schemas/ProductStatusHistoryDto'
         timestamp:
           type: string
           format: date-time
@@ -363,5 +225,5 @@ components:
           description: Path where the error occurred
 security: []
 externalDocs:
-  description: Product API Documentation
+  description: Product Status History API Documentation
   url: https://example.com/docs
