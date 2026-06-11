@@ -17,20 +17,16 @@ data class StatusHistoryQueryRequest(
     @Min(1)
     @Max(10000)
     val limit: Int = 1000,
-
     @Parameter(description = "Возвращать записи после этого timestamp (inclusive)")
     @Schema(example = "2026-06-03T20:19:45")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     val createdAfter: Instant? = null,
-
     @Parameter(description = "ID продукта для фильтрации")
     @Schema(example = "123e4567-e89b-12d3-a456-426614174002")
     val productId: String? = null,
-
     @Parameter(description = "Фильтр по статусу после перехода")
     @Schema(example = "ACTIVE")
     val toStatus: String? = null,
-
     @Parameter(description = "Фильтр по статусу до перехода")
     @Schema(example = "DRAFT")
     val fromStatus: String? = null,

@@ -9,7 +9,6 @@ import ru.example.product.data.domain.ProductStatusHistoryEntity
  */
 @Component
 class ProductStatusHistoryMapper {
-
     fun toDto(entity: ProductStatusHistoryEntity): ProductStatusHistoryDto {
         return ProductStatusHistoryDto(
             id = entity.id?.toString() ?: "",

@@ -7,7 +7,6 @@ import ru.example.product.data.dto.request.StatusHistoryQueryRequest
  * Service interface for product status history operations.
  */
 interface ProductStatusHistoryService {
-
     /**
      * Получить записи истории статусов с фильтрацией.
      *
