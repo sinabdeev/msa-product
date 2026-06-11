@@ -1,0 +1,229 @@
+openapi: 3.0.3
+info:
+  title: Product Status History API
+  description: Product status history API for msa-product-data
+  version: v1.0.0
+  contact:
+    name: Product Team
+    email: product@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+tags:
+  - name: Status History
+    description: Product status history operations
+paths:
+  /api/v1/status-history:
+    get:
+      tags:
+        - Status History
+      summary: Get product status history records
+      description: Retrieve product status history records with optional filters
+      operationId: getStatusHistory
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1000
+            minimum: 1
+            maximum: 10000
+          description: Maximum number of records to return
+        - name: created_after
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Return records after this timestamp (inclusive)
+        - name: productId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Product ID filter
+        - name: toStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - DRAFT
+              - PENDING_REVIEW
+              - REVIEWED
+              - APPROVED
+              - REJECTED
+              - ACTIVE
+              - PROCESSED
+              - SHIPPED
+              - ARCHIVED
+          description: Filter by status after transition
+        - name: fromStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - DRAFT
+              - PENDING_REVIEW
+              - REVIEWED
+              - APPROVED
+              - REJECTED
+              - ACTIVE
+              - PROCESSED
+              - SHIPPED
+              - ARCHIVED
+          description: Filter by status before transition
+      responses:
+        '200':
+          description: Status history retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseListProductStatusHistoryDto'
+        '400':
+          description: Invalid input or validation failed
+components:
+  schemas:
+    ProductStatusHistoryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the history record
+        productId:
+          type: string
+          description: ID of the product
+        fromStatus:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Status before transition
+        toStatus:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Status after transition
+        reason:
+          type: string
+          nullable: true
+          description: Transition reason
+        userId:
+          type: string
+          nullable: true
+          description: User ID who triggered the transition
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+        processingDurationSeconds:
+          type: integer
+          format: int64
+          nullable: true
+          description: Processing duration in seconds
+    StatusHistoryQueryRequest:
+      type: object
+      properties:
+        limit:
+          type: integer
+          default: 1000
+          minimum: 1
+          maximum: 10000
+          description: Maximum number of records to return
+        createdAfter:
+          type: string
+          format: date-time
+          description: Return records after this timestamp (inclusive)
+        productId:
+          type: string
+          format: uuid
+          description: Product ID filter
+        toStatus:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Filter by status after transition
+        fromStatus:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING_REVIEW
+            - REVIEWED
+            - APPROVED
+            - REJECTED
+            - ACTIVE
+            - PROCESSED
+            - SHIPPED
+            - ARCHIVED
+          description: Filter by status before transition
+    ApiResponseListProductStatusHistoryDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+        message:
+          type: string
+          description: Response message
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductStatusHistoryDto'
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the response
+    ApiError:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+        message:
+          type: string
+          description: Error message
+        details:
+          type: string
+          description: Detailed error description
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the error
+        path:
+          type: string
+          description: Path where the error occurred
+security: []
+externalDocs:
+  description: Product Status History API Documentation
+  url: https://example.com/docs

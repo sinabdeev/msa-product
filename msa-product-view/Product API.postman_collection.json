@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "a66ec586-d152-4440-b012-0b24a4a0f032",
+		"name": "Product Status History API",
+		"description": "Product status history API for msa-product-data\n\nContact Support:\n Name: Product Team\n Email: product@example.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get product status history records",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/status-history?limit=100",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"status-history"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "100",
+							"description": "Maximum number of records to return"
+						},
+						{
+							"key": "created_after",
+							"value": "\"2025-06-11T19:10:57.132499Z\"",
+							"description": "Return records after this timestamp (inclusive)",
+							"disabled": true
+						},
+						{
+							"key": "productId",
+							"value": "<uuid>",
+							"description": "Product ID filter",
+							"disabled": true
+						},
+						{
+							"key": "toStatus",
+							"value": "<string>",
+							"description": "Filter by status after transition",
+							"disabled": true
+						},
+						{
+							"key": "fromStatus",
+							"value": "<string>",
+							"description": "Filter by status before transition",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Retrieve product status history records with optional filters"
+			},
+			"response": [
+				{
+					"name": "Invalid input or validation failed",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/status-history?limit=1000&created_after=<dateTime>&productId=<uuid>&toStatus=<string>&fromStatus=<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"status-history"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1000"
+								},
+								{
+									"key": "created_after",
+									"value": "<dateTime>"
+								},
+								{
+									"key": "productId",
+									"value": "<uuid>"
+								},
+								{
+									"key": "toStatus",
+									"value": "<string>"
+								},
+								{
+									"key": "fromStatus",
+									"value": "<string>"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Status history retrieved successfully",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/status-history?limit=1000&created_after=<dateTime>&productId=<uuid>&toStatus=<string>&fromStatus=<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"status-history"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1000"
+								},
+								{
+									"key": "created_after",
+									"value": "<dateTime>"
+								},
+								{
+									"key": "productId",
+									"value": "<uuid>"
+								},
+								{
+									"key": "toStatus",
+									"value": "<string>"
+								},
+								{
+									"key": "fromStatus",
+									"value": "<string>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"success\": false,\n \"message\": \"ut reprehenderit officia sun\",\n \"data\": [\n  {\n   \"id\": \"cupidatat pariatur aliqua id\",\n   \"productId\": \"reprehenderit\",\n   \"fromStatus\": \"REVIEWED\",\n   \"toStatus\": \"DRAFT\",\n   \"reason\": \"dolor Ut consequat\",\n   \"userId\": \"sint labor\",\n   \"createdAt\": \"1993-10-06T20:34:17.963Z\",\n   \"processingDurationSeconds\": -37499164\n  },\n  {\n   \"id\": \"Ut\",\n   \"productId\": \"laborum et dolor laboris\",\n   \"fromStatus\": \"REVIEWED\",\n   \"toStatus\": \"DRAFT\",\n   \"reason\": \"officia adipisicing\",\n   \"userId\": \"non sit\",\n   \"createdAt\": \"2010-02-06T15:57:21.134Z\",\n   \"processingDurationSeconds\": 65019463\n  }\n ],\n \"timestamp\": \"2013-12-19T23:31:52.395Z\"\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

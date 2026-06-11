@@ -17,9 +17,10 @@
 
 4. Хук [`useRealtimeData`](src/hooks/useRealtimeData.ts) при монтировании (в `useEffect` без зависимостей) вызывает `DataService.fetchRecords()`:
    - **Если используется MockDataService** — генерируется начальный пул из ~50-100 случайных записей (имитация истории)
-   - **Если используется ApiDataService** — выполняется `GET /api/status-history?limit=1000` для получения последних 1000 записей
+   - **Если используется ApiDataService** — выполняется `GET /api/v1/status-history?limit=1000` для получения последних 1000 записей
+   - ApiDataService извлекает массив записей из обёртки `ApiResponse.data` и проверяет `success === true`
 5. Полученные сырые записи сохраняются в состояние `records: StatusHistoryRecord[]`
-6. Хук запоминает `created_at` последней полученной записи как `lastTimestamp`
+6. Хук запоминает `createdAt` последней полученной записи как `lastTimestamp`
 
 ### 2.3. Агрегация данных
 
@@ -48,8 +49,8 @@
 
 13. Хук [`useRealtimeData`](src/hooks/useRealtimeData.ts) устанавливает `setInterval(fetchNewData, 1000)` — тикер на 1 секунду
 14. Каждую секунду:
-    - **MockDataService**: генерируется 1-5 новых случайных записей с `created_at` = текущее время
-    - **ApiDataService**: выполняется `GET /api/status-history?created_after={lastTimestamp}&limit=100`
+    - **MockDataService**: генерируется 1-5 новых случайных записей с `createdAt` = текущее время (ISO 8601)
+    - **ApiDataService**: выполняется `GET /api/v1/status-history?created_after={lastTimestamp}&limit=100`
 15. Новые записи добавляются в конец массива `records` (через `setRecords(prev => [...prev, ...newRecords])`)
 16. Хук обновляет `lastTimestamp`
 17. Агрегаторы перезапускаются на обновлённом массиве `records`
@@ -160,11 +161,56 @@ REST API (сырые записи)
 ```typescript
 interface DataService {
   fetchRecords(): Promise<StatusHistoryRecord[]>;
+  fetchNewRecords(createdAfter: string): Promise<StatusHistoryRecord[]>;
 }
 ```
 
 - **MockDataService** — пока нет API, генерирует случайные записи на фронте
-- **ApiDataService** — когда появится API, делает fetch к REST эндпоинту
+- **ApiDataService** — делает fetch к REST эндпоинту `GET /api/v1/status-history`
+
+#### ApiDataService — детали реализации
+
+**Базовый URL:** `http://localhost:8080` (настраивается через `VITE_API_BASE_URL` в `.env`)
+
+**Обработка ответа API:**
+```typescript
+async fetchRecords(): Promise<StatusHistoryRecord[]> {
+  const response = await fetch(`${baseUrl}/api/v1/status-history?limit=1000`);
+  if (!response.ok) {
+    throw new ApiError(response.status, response.statusText);
+  }
+  const apiResponse: ApiResponse<StatusHistoryRecord[]> = await response.json();
+  if (!apiResponse.success) {
+    throw new ApiError(400, apiResponse.message);
+  }
+  return apiResponse.data;
+}
+```
+
+**Обработка ошибок:**
+- HTTP 400 — невалидные параметры запроса → логируется `FETCH_ERROR` с `statusCode: 400`
+- HTTP 5xx — ошибка сервера → логируется `FETCH_ERROR` с `statusCode`
+- Сетевые ошибки (CORS, timeout) → логируется `FETCH_ERROR` с `errorMessage`
+
+**Retry-логика:**
+- При сетевых ошибках — до 3 повторных попыток с экспоненциальной задержкой (1s, 2s, 4s)
+- При HTTP 4xx — повторные попытки не выполняются (ошибка клиента)
+- При HTTP 5xx — до 2 повторных попыток
+
+**CORS:**
+- API работает на `http://localhost:8080`, фронтенд на `http://localhost:5173`
+- Vite dev server проксирует запросы через `vite.config.ts`:
+  ```typescript
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
+    }
+  }
+  ```
+- В production — CORS настраивается на стороне API-сервера
 
 ### Агрегаторы (utils/aggregators.ts)
 
@@ -184,17 +230,27 @@ function aggregateHourlyActivity(records: StatusHistoryRecord[]): PieChartData[]
 
 ## 6. Типы данных на фронте
 
+> **Важно:** API возвращает поля в **camelCase** (см. [`openapi.yaml`](openapi.yaml:95-146)). Фронтенд работает с данными в том же формате, без преобразования.
+
 ```typescript
-// Модель записи из БД (сырые данные)
+// Модель записи из API (camelCase, соответствует ProductStatusHistoryDto из openapi.yaml)
 interface StatusHistoryRecord {
   id: string;
-  product_id: string;
-  from_status: string;
-  to_status: string;
+  productId: string;
+  fromStatus: string;
+  toStatus: string;
   reason: string | null;
-  user_id: string | null;
-  created_at: string;
-  processing_duration_seconds: number | null;
+  userId: string | null;
+  createdAt: string;                        // ISO 8601 с часовым поясом, например "2025-06-11T19:10:57.132499Z"
+  processingDurationSeconds: number | null; // int64 в API
+}
+
+// Обёртка ответа API (соответствует ApiResponseListProductStatusHistoryDto из openapi.yaml)
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  timestamp: string; // ISO 8601
 }
 
 // Агрегированные данные для BarChart
@@ -226,17 +282,19 @@ interface AggregatedData {
 
 ## 7. 9 графиков и их агрегация
 
+> Поля указаны в camelCase, как они приходят из API и хранятся в `StatusHistoryRecord`.
+
 | # | Тип | Название | Агрегация |
 |---|-----|----------|-----------|
-| 1 | BarChart | Переходы по статусам | GROUP BY `to_status` → COUNT |
-| 2 | BarChart | Среднее время обработки | GROUP BY `to_status` → AVG(`processing_duration_seconds`) |
-| 3 | BarChart | Топ продуктов | GROUP BY `product_id` → COUNT, топ-10 |
+| 1 | BarChart | Переходы по статусам | GROUP BY `toStatus` → COUNT |
+| 2 | BarChart | Среднее время обработки | GROUP BY `toStatus` → AVG(`processingDurationSeconds`) |
+| 3 | BarChart | Топ продуктов | GROUP BY `productId` → COUNT, топ-10 |
 | 4 | BarChart | Причины переходов | GROUP BY `reason` → COUNT |
-| 5 | BarChart | Активность пользователей | GROUP BY `user_id` → COUNT, топ-10 |
-| 6 | PieChart | Доля статусов | GROUP BY `to_status` → COUNT |
+| 5 | BarChart | Активность пользователей | GROUP BY `userId` → COUNT, топ-10 |
+| 6 | PieChart | Доля статусов | GROUP BY `toStatus` → COUNT |
 | 7 | PieChart | Доля причин (donut) | GROUP BY `reason` → COUNT |
-| 8 | PieChart | Откуда переходят | GROUP BY `from_status` → COUNT |
-| 9 | PieChart | Активность по часам | GROUP BY час из `created_at` → COUNT |
+| 8 | PieChart | Откуда переходят | GROUP BY `fromStatus` → COUNT |
+| 9 | PieChart | Активность по часам | GROUP BY час из `createdAt` → COUNT |
 
 ## 8. Структура проекта
 
@@ -246,13 +304,14 @@ src/
 ├── App.tsx
 ├── index.css                       # Tailwind directives
 ├── types/
-│   └── data.ts                     # Типы данных
+│   └── data.ts                     # Типы данных (StatusHistoryRecord, ApiResponse, AggregatedData)
 ├── services/
-│   ├── types.ts                    # Интерфейс DataService
+│   ├── types.ts                    # Интерфейс DataService + ApiError
 │   ├── mockDataService.ts          # Генератор мок-данных
-│   └── apiDataService.ts           # Реальное API (заглушка пока)
+│   └── apiDataService.ts           # Реальное API (fetch + retry + обработка ошибок)
 ├── utils/
-│   └── aggregators.ts              # Функции агрегации
+│   ├── aggregators.ts              # Функции агрегации
+│   └── logger.ts                   # Стилизованный логгер для консоли браузера
 ├── hooks/
 │   └── useRealtimeData.ts          # Хук: тикер 1с + агрегация
 ├── components/
@@ -272,29 +331,29 @@ src/
 
 ## 9. Генерация мок-данных (mockDataService.ts)
 
-Пока нет реального API, генерируем случайные записи, **максимально приближенные к реальным данным из CSV**:
+Пока нет реального API, генерируем случайные записи, **максимально приближенные к реальным данным из CSV**. Все поля генерируются в **camelCase** (как в API-ответе), timestamps — в **ISO 8601** с часовым поясом.
 
 ### Статусы (9 шт., как в реальных данных)
 `DRAFT`, `PENDING_REVIEW`, `REVIEWED`, `APPROVED`, `REJECTED`, `ARCHIVED`, `ACTIVE`, `PROCESSED`, `SHIPPED`
 
-### Причина
+### reason
 Всегда `Batch processing` (как в реальных данных). График причин будет неинформативным, но отражает реальность.
 
-### product_id
+### productId
 20 разных UUID.
 
-### user_id
+### userId
 10 разных UUID. Часть записей — с `null` (как в реальных данных, ~5-10%).
 
-### processing_duration_seconds
+### processingDurationSeconds
 - 70% записей — `null` (как в реальных данных)
-- 30% — случайное число от 1 до 3_000_000 (секунды, как в реальных данных)
+- 30% — случайное целое число от 1 до 3_000_000 (секунды, как в реальных данных)
 
-### created_at
-Случайное время за последние 24 часа. Формат: `YYYY-MM-DD HH:mm:ss.SSS` (как в реальных данных, без часового пояса).
+### createdAt
+Случайное время за последние 24 часа. Формат: **ISO 8601 с часовым поясом**, например `2026-06-11T19:10:57.132Z`. Генерируется через `new Date(randomTimestamp).toISOString()`.
 
 ### Каждую секунду
-Генерируется 1-5 новых записей, пул записей растёт.
+Генерируется 1-5 новых записей с `createdAt` = `new Date().toISOString()`, пул записей растёт.
 
 ## 10. Анимация
 
@@ -355,7 +414,7 @@ interface LogMessage {
   [14:23:45.350] ✅ [DataService] Получено записей: 87 | размер: ~45KB
   [14:23:45.400] 🔍 [Aggregators] Запуск 9 агрегаторов | записей: 87
   [14:23:45.410] ✅ [Aggregators] Агрегация завершена | время: 12ms | графиков обновлено: 9
-[14:23:45.420] ✅ [useRealtimeData] Данные загружены | записей: 87 | lastTimestamp: 2026-06-03 20:19:45.000
+[14:23:45.420] ✅ [useRealtimeData] Данные загружены | записей: 87 | lastTimestamp: 2026-06-03T20:19:45.000Z
 [14:23:45.500] ℹ️ [Dashboard] Рендер сетки 3x3 | графиков: 9
 ```
 
@@ -563,7 +622,7 @@ function debug(component: string, event: string, details?: Record<string, unknow
 [14:23:45.350]   ✅ [DataService] FETCH_SUCCESS | records: 87 | duration: 98ms
 [14:23:45.400]   🔍 [Aggregators] AGGREGATION_START | records: 87
 [14:23:45.410]   ✅ [Aggregators] AGGREGATION_COMPLETE | duration: 12ms | charts: 9
-[14:23:45.420] ✅ [useRealtimeData] INIT_LOAD_SUCCESS | records: 87 | lastTimestamp: 2026-06-03 20:19:45.000
+[14:23:45.420] ✅ [useRealtimeData] INIT_LOAD_SUCCESS | records: 87 | lastTimestamp: 2026-06-03T20:19:45.000Z
 [14:23:45.430] ℹ️ [useRealtimeData] TICKER_START | interval: 1000ms
 [14:23:45.500] ℹ️ [ChartCard] CHART_MOUNT | chart: Переходы по статусам
 [14:23:45.510] ℹ️ [ChartCard] CHART_MOUNT | chart: Среднее время обработки
@@ -595,16 +654,18 @@ function debug(component: string, event: string, details?: Record<string, unknow
 | 1 | Инициализировать Vite + React + TS проект | `npm create vite@latest` |
 | 2 | Установить зависимости | `npm install recharts tailwindcss @tailwindcss/vite` |
 | 3 | Настроить Tailwind CSS | `tailwind.config.js`, `postcss.config.js`, `index.css` |
-| 4 | Создать типы данных | `src/types/data.ts` |
-| 5 | Создать интерфейс DataService + MockDataService | `src/services/types.ts`, `src/services/mockDataService.ts` |
-| 6 | Создать агрегаторы | `src/utils/aggregators.ts` |
-| 7 | **Создать логгер** | **`src/utils/logger.ts`** |
-| 8 | Создать хук useRealtimeData (с логированием) | `src/hooks/useRealtimeData.ts` |
-| 9 | Создать ChartCard (с логированием) | `src/components/ChartCard.tsx` |
-| 10 | Создать 9 компонентов графиков (с логированием анимаций) | `src/components/charts/*.tsx` |
-| 11 | Создать Dashboard (с логированием) | `src/components/Dashboard.tsx` |
-| 12 | Обновить App.tsx | Подключить Dashboard |
-| 13 | Проверить сборку и запустить | `npm run dev` |
+| 4 | Настроить Vite proxy для `/api` → `localhost:8080` | `vite.config.ts` |
+| 5 | Создать типы данных (camelCase, ApiResponse) | `src/types/data.ts` |
+| 6 | Создать интерфейс DataService + ApiError + MockDataService | `src/services/types.ts`, `src/services/mockDataService.ts` |
+| 7 | Создать ApiDataService (fetch + retry + обработка ошибок) | `src/services/apiDataService.ts` |
+| 8 | Создать агрегаторы | `src/utils/aggregators.ts` |
+| 9 | **Создать логгер** | **`src/utils/logger.ts`** |
+| 10 | Создать хук useRealtimeData (с логированием) | `src/hooks/useRealtimeData.ts` |
+| 11 | Создать ChartCard (с логированием) | `src/components/ChartCard.tsx` |
+| 12 | Создать 9 компонентов графиков (с логированием анимаций) | `src/components/charts/*.tsx` |
+| 13 | Создать Dashboard (с логированием) | `src/components/Dashboard.tsx` |
+| 14 | Обновить App.tsx | Подключить Dashboard |
+| 15 | Проверить сборку и запустить | `npm run dev` |
 
 ## 14. Критерии готовности
 
@@ -615,7 +676,10 @@ function debug(component: string, event: string, details?: Record<string, unknow
 - [ ] Графики соответствуют структуре таблицы БД
 - [ ] Слой данных абстрагирован (легко заменить мок на реальное API)
 - [ ] Адаптивная вёрстка
-- [ ] Мок-данные соответствуют реальной структуре (9 статусов, `Batch processing`, формат дат без TZ)
+- [ ] Мок-данные соответствуют реальной структуре (9 статусов, `Batch processing`, camelCase поля, ISO 8601 timestamps)
+- [ ] **ApiDataService обрабатывает обёртку ApiResponse и проверяет success === true**
+- [ ] **ApiDataService обрабатывает HTTP-ошибки (400, 5xx) и сетевые ошибки с retry-логикой**
+- [ ] **Vite proxy настроен для проксирования /api на localhost:8080 в dev-режиме**
 - [ ] **В консоль браузера логируются все события жизненного цикла без самих данных**
 - [ ] **Debug-логи отключаются в production-сборке**
 - [ ] **Логи имеют цветовое кодирование и временные метки**
