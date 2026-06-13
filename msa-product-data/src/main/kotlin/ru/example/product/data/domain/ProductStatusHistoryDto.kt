@@ -1,5 +1,7 @@
 package ru.example.product.data.domain
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.Instant
 import java.util.*
@@ -9,6 +11,7 @@ import java.util.*
  * Used for API responses to the frontend.
  */
 @Schema(description = "Product status history record")
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
 data class ProductStatusHistoryDto(
     @Schema(description = "ID записи истории", example = "123e4567-e89b-12d3-a456-426614174001")
     val id: String,
