@@ -88,21 +88,59 @@ export function aggregateUserActivity(records: StatusHistoryRecord[]): BarChartD
 }
 
 // 6. Доля статусов: GROUP BY toStatus → COUNT
+/**
+ * Агрегирует записи истории статусов для построения круговой диаграммы (pie chart),
+ * отображающей долю каждого целевого статуса (`toStatus`) в общем количестве переходов.
+ *
+ * **Логика работы:**
+ * 1. Выполняется группировка записей по полю `toStatus` с подсчётом количества
+ *    переходов в каждый статус (аналог SQL-запроса `GROUP BY toStatus → COUNT`).
+ * 2. Для каждой группы формируется объект {@link PieChartData}, содержащий:
+ *    - `name` — название статуса;
+ *    - `value` — количество переходов в данный статус;
+ *    - `fill` — цвет сектора диаграммы, назначаемый циклически из палитры {@link COLORS}.
+ * 3. Результирующий массив сортируется по убыванию `value`, чтобы наиболее
+ *    частые статусы отображались первыми.
+ *
+ * @param records — массив записей истории статусов ({@link StatusHistoryRecord}).
+ *                  Каждая запись должна содержать поле `toStatus`.
+ *                  Пустой массив допустим — в этом случае будет возвращён пустой результат.
+ * @returns Массив объектов {@link PieChartData}, готовый для передачи в компонент
+ *          круговой диаграммы (например, `StatusPieChart`). Если `records` пуст,
+ *          возвращается пустой массив.
+ *
+ * @example
+ * ```ts
+ * const records: StatusHistoryRecord[] = [
+ *   { toStatus: 'ACTIVE', ... },
+ *   { toStatus: 'ACTIVE', ... },
+ *   { toStatus: 'INACTIVE', ... },
+ * ];
+ * const pieData = aggregateStatusPie(records);
+ * // Результат: [
+ * //   { name: 'ACTIVE', value: 2, fill: '#8884d8' },
+ * //   { name: 'INACTIVE', value: 1, fill: '#82ca9d' },
+ * // ]
+ * ```
+ */
 export function aggregateStatusPie(records: StatusHistoryRecord[]): PieChartData[] {
   const counts = new Map<string, number>();
   
+  // 1. Собираем количество вхождений
   for (const record of records) {
     counts.set(record.toStatus, (counts.get(record.toStatus) || 0) + 1);
   }
   
+  // 2. Превращаем в массив, СНАЧАЛА сортируем, а ПОТОМ красим
   return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1]) // Сортировка по значению count (индекс 1 в [key, value])
     .map(([name, value], index) => ({ 
       name, 
       value, 
       fill: COLORS[index % COLORS.length] 
-    }))
-    .sort((a, b) => b.value - a.value);
+    }));
 }
+
 
 // 7. Доля причин (donut): GROUP BY reason → COUNT
 export function aggregateReasonsPie(records: StatusHistoryRecord[]): PieChartData[] {
