@@ -199,6 +199,49 @@ data class ProductEntity(
 | Пакеты | lowercase.dot.separated | `ru.example.product.data` |
 | DTO | PascalCase + суффикс | `ProductDto`, `CreateProductRequest` |
 | Entity | PascalCase + суффикс | `ProductEntity` |
+| REST API поля (JSON) | camelCase | `productName`, `createdAt` |
+
+### 6.2.1. REST API именование полей
+
+**Все поля в REST API запросах и ответах должны использовать camelCase.**
+
+Это правило применяется ко всем JSON-полям в:
+- Request DTO (`CreateProductRequest`, `UpdateProductRequest`, и т.д.)
+- Response DTO (`ProductDto`, `ApiResponse`, и т.д.)
+- Query параметрах
+- Path переменных (если состоят из нескольких слов)
+
+**Примеры:**
+
+```kotlin
+// ✅ Правильно - camelCase
+data class CreateProductRequest(
+    val productName: String,
+    val productDescription: String,
+    val unitPrice: BigDecimal,
+    val stockQuantity: Int,
+    val createdAt: Instant
+)
+
+// ❌ Неправильно - snake_case
+data class CreateProductRequest(
+    val product_name: String,
+    val product_description: String,
+    val unit_price: BigDecimal,
+    val stock_quantity: Int,
+    val created_at: Instant
+)
+```
+
+**Настройка Jackson:**
+
+Для обеспечения camelCase в JSON, Jackson настроен в `application.yaml`:
+
+```yaml
+spring:
+  jackson:
+    property-naming-strategy: LOWER_CAMEL_CASE
+```
 
 ### 6.3. Архитектурные паттерны
 
