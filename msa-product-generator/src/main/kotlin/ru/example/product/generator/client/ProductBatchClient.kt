@@ -72,5 +72,5 @@ class ProductBatchClient(
      * Get the API base URL from environment or use default.
      */
     private val apiBaseUrl: String
-        get() = System.getenv("API_BASE_URL") ?: "http://localhost:8080/api/v1/products/batch"
+        get() = System.getenv("API_BASE_URL") ?: "http://localhost:8085/api/v1/products/batch"
 }
