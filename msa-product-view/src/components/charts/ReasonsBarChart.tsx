@@ -12,7 +12,7 @@ export default function ReasonsBarChart({ data }: ReasonsBarChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+          <XAxis dataKey="name" angle={-90} textAnchor="end" height={100} interval={0} />
           <YAxis />
           <Tooltip />
           <Bar 
