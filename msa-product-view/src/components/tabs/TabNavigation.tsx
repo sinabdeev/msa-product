@@ -24,14 +24,14 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`flex flex-col items-center justify-center gap-1 px-2 py-4 text-xs font-medium transition-colors ${
+            className={`flex flex-col items-center justify-center gap-[3px] px-2 py-4 text-[23px] font-medium transition-colors ${
               isActive
                 ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             <Icon size={20} />
-            <span>{tab.label}</span>
+            <span className="[writing-mode:vertical-rl] [transform:rotate(180deg)] whitespace-nowrap">{tab.label}</span>
           </button>
         );
       })}
