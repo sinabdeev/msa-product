@@ -1,18 +1,14 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRealtimeData } from '../hooks/useRealtimeData';
 import { ApiDataService } from '../services/apiDataService';
 import { logger } from '../utils/logger';
-import StatusBarChart from './charts/StatusBarChart';
-import AvgProcessingTimeChart from './charts/AvgProcessingTimeChart';
-import TopProductsChart from './charts/TopProductsChart';
-import ReasonsBarChart from './charts/ReasonsBarChart';
-import UserActivityChart from './charts/UserActivityChart';
-import StatusPieChart from './charts/StatusPieChart';
-import ReasonsPieChart from './charts/ReasonsPieChart';
-import FromStatusPieChart from './charts/FromStatusPieChart';
-import HourlyActivityChart from './charts/HourlyActivityChart';
+import TabNavigation, { TabType } from './tabs/TabNavigation';
+import ChartsTab from './tabs/ChartsTab';
+import DataTab from './tabs/DataTab';
+import SettingsTab from './tabs/SettingsTab';
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState<TabType>('charts');
   const { aggregatedData, loading, error } = useRealtimeData(new ApiDataService());
 
   useEffect(() => {
@@ -49,24 +45,26 @@ export default function Dashboard() {
     );
   }
 
-  logger.debug('Dashboard', 'RENDER', { chartsCount: 9 });
+  logger.debug('Dashboard', 'RENDER', { activeTab, chartsCount: 9 });
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'charts':
+        return <ChartsTab data={aggregatedData} />;
+      case 'data':
+        return <DataTab />;
+      case 'settings':
+        return <SettingsTab />;
+      default:
+        return <ChartsTab data={aggregatedData} />;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
-        Product Status History Dashboard
-      </h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[calc(100vh-120px)]">
-        <StatusBarChart data={aggregatedData.statusBar} />
-        <AvgProcessingTimeChart data={aggregatedData.avgProcessingTime} />
-        <TopProductsChart data={aggregatedData.topProducts} />
-        <ReasonsBarChart data={aggregatedData.reasonsBar} />
-        <UserActivityChart data={aggregatedData.userActivity} />
-        <StatusPieChart data={aggregatedData.statusPie} />
-        <ReasonsPieChart data={aggregatedData.reasonsPie} />
-        <FromStatusPieChart data={aggregatedData.fromStatusPie} />
-        <HourlyActivityChart data={aggregatedData.hourlyActivity} />
+    <div className="flex h-screen bg-gray-100">
+      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="flex-1 overflow-auto">
+        {renderTabContent()}
       </div>
     </div>
   );
