@@ -9,7 +9,7 @@ import SettingsTab from './tabs/SettingsTab';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('charts');
-  const { aggregatedData, loading, error } = useRealtimeData(new ApiDataService());
+  const { records, aggregatedData, loading, error } = useRealtimeData(new ApiDataService());
 
   useEffect(() => {
     logger.info('Dashboard', 'MOUNT');
@@ -52,7 +52,7 @@ export default function Dashboard() {
       case 'charts':
         return <ChartsTab data={aggregatedData} />;
       case 'data':
-        return <DataTab />;
+        return <DataTab records={records} />;
       case 'settings':
         return <SettingsTab />;
       default:

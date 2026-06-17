@@ -9,7 +9,7 @@ export class ApiDataService implements DataService {
     logger.debug('DataService', 'FETCH_START', { mode: 'initial' });
 
     try {
-      const response = await fetch('/api/v1/status-history?limit=5');
+      const response = await fetch('/api/v1/status-history?limit=20');
       
       if (!response.ok) {
         const error = new ApiError(response.status, response.statusText);
