@@ -2,7 +2,7 @@ import type { StatusHistoryRecord } from '../types/data';
 
 // Интерфейс слоя данных
 export interface DataService {
-  fetchRecords(): Promise<StatusHistoryRecord[]>;
+  fetchRecords(initialLimit: number, pollLimit: number): Promise<StatusHistoryRecord[]>;
 }
 
 // Класс ошибки API

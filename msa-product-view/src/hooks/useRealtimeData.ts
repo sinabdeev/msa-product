@@ -5,7 +5,11 @@ import { MockDataService } from '../services/mockDataService';
 import { aggregateAll } from '../utils/aggregators';
 import { logger } from '../utils/logger';
 
-export function useRealtimeData(dataService: DataService = new MockDataService()) {
+export function useRealtimeData(
+  dataService: DataService = new MockDataService(),
+  initialLimit: number = 20,
+  pollLimit: number = 100
+) {
   const [records, setRecords] = useState<StatusHistoryRecord[]>([]);
   const [aggregatedData, setAggregatedData] = useState<AggregatedData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,7 +25,7 @@ export function useRealtimeData(dataService: DataService = new MockDataService()
       logger.group('useRealtimeData', 'Первичная загрузка данных');
 
       try {
-        const initialRecords = await dataService.fetchRecords();
+        const initialRecords = await dataService.fetchRecords(initialLimit, pollLimit);
         setRecords(initialRecords);
 
         const aggregated = aggregateAll(initialRecords);
@@ -44,7 +48,7 @@ export function useRealtimeData(dataService: DataService = new MockDataService()
           const pollStartTime = Date.now();
 
           try {
-            const freshRecords = await dataService.fetchRecords();
+            const freshRecords = await dataService.fetchRecords(initialLimit, pollLimit);
             
             if (freshRecords.length === 0) {
               logger.info('useRealtimeData', 'POLL_EMPTY', { tickNumber });

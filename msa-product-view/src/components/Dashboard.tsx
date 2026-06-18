@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRealtimeData } from '../hooks/useRealtimeData';
+import { useSettings } from '../hooks/useSettings';
 import { ApiDataService } from '../services/apiDataService';
 import { logger } from '../utils/logger';
 import TabNavigation, { TabType } from './tabs/TabNavigation';
@@ -9,7 +10,12 @@ import SettingsTab from './tabs/SettingsTab';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('charts');
-  const { records, aggregatedData, loading, error } = useRealtimeData(new ApiDataService());
+  const { initialLimit, pollLimit, setInitialLimit, setPollLimit, resetToDefaults } = useSettings();
+  const { records, aggregatedData, loading, error } = useRealtimeData(
+    new ApiDataService(),
+    initialLimit,
+    pollLimit
+  );
 
   useEffect(() => {
     logger.info('Dashboard', 'MOUNT');
@@ -54,7 +60,15 @@ export default function Dashboard() {
       case 'data':
         return <DataTab records={records} />;
       case 'settings':
-        return <SettingsTab />;
+        return (
+          <SettingsTab
+            initialLimit={initialLimit}
+            pollLimit={pollLimit}
+            onInitialLimitChange={setInitialLimit}
+            onPollLimitChange={setPollLimit}
+            onResetDefaults={resetToDefaults}
+          />
+        );
       default:
         return <ChartsTab data={aggregatedData} />;
     }

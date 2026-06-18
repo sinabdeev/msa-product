@@ -4,12 +4,12 @@ import { ApiError } from './types';
 import { logger } from '../utils/logger';
 
 export class ApiDataService implements DataService {
-  async fetchRecords(): Promise<StatusHistoryRecord[]> {
+  async fetchRecords(initialLimit: number): Promise<StatusHistoryRecord[]> {
     const startTime = Date.now();
-    logger.debug('DataService', 'FETCH_START', { mode: 'initial' });
+    logger.debug('DataService', 'FETCH_START', { mode: 'initial', limit: initialLimit });
 
     try {
-      const response = await fetch('/api/v1/status-history?limit=20');
+      const response = await fetch(`/api/v1/status-history?limit=${initialLimit}`);
       
       if (!response.ok) {
         const error = new ApiError(response.status, response.statusText);

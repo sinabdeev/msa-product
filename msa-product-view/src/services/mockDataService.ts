@@ -51,15 +51,15 @@ function generateRecord(createdAt?: Date): StatusHistoryRecord {
 }
 
 export class MockDataService implements DataService {
-  async fetchRecords(): Promise<StatusHistoryRecord[]> {
+  async fetchRecords(initialLimit: number): Promise<StatusHistoryRecord[]> {
     const startTime = Date.now();
-    logger.debug('DataService', 'FETCH_START', { mode: 'initial' });
+    logger.debug('DataService', 'FETCH_START', { mode: 'initial', limit: initialLimit });
 
-    // Генерируем начальный пул из 87 записей за последние 24 часа
+    // Генерируем пул записей за последние 24 часа
     const now = Date.now();
     const records: StatusHistoryRecord[] = [];
     
-    for (let i = 0; i < 87; i++) {
+    for (let i = 0; i < initialLimit; i++) {
       const randomTime = now - Math.floor(Math.random() * 24 * 60 * 60 * 1000);
       records.push(generateRecord(new Date(randomTime)));
     }
