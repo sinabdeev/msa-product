@@ -1,0 +1,53 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+/cxx
+.local
+/.gradle
+distributionDir/
+overlay/
+fastlane/
+*.jks
+*.p12
+*.p8a
+*.keystore
+debug.keystore
+
+# Maven
+/target
+pom.xml
+
+# Android Studio Google Cloud Plugin
+/gcloud/
+
+# Google Cloud Endpoints (generated)
+/.eclipseproject
+/.eclipsehostedproject
+/.launch
+
+# Gradle Warehouses
+/.gradlewarehouses/
+
+# ktlint
+.ktlint
+
+# Local configuration instance (metadata, secrets)
+secrets.properties
+
+# Backup folders
+backup/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Android Profiler
+/profiler/
+
+# Log files
+*.log
